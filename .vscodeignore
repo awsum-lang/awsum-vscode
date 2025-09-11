@@ -1,0 +1,5 @@
+**/.git/**
+**/.vscode/**
+src/**
+node_modules/**/typescript/**
+node_modules/**/@types/**
