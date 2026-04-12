@@ -1,0 +1,69 @@
+{
+  "name": "awsum-vscode",
+  "displayName": "Awsum",
+  "description": "Awsum language support for Visual Studio Code",
+  "publisher": "awsum-lang",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.104.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/awsum-lang/awsum-vscode.git"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "awsum",
+        "aliases": [
+          "Awsum"
+        ],
+        "extensions": [
+          ".aww"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "awsum",
+        "scopeName": "source.awsum",
+        "path": "./syntaxes/awsum.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "title": "Awsum",
+      "properties": {
+        "awsum.format.path": {
+          "type": "string",
+          "default": "awsum",
+          "description": "Path to the awsum binary (if not in PATH). For example: /usr/local/bin/awsum"
+        }
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "syntaxes",
+    "language-configuration.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p .",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.1",
+    "@types/vscode": "^1.104.0",
+    "typescript": "^5.9.2",
+    "@vscode/vsce": "^3.6.0"
+  }
+}

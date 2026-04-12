@@ -1,0 +1,179 @@
+{
+  "name": "Awsum",
+  "scopeName": "source.awsum",
+  "fileTypes": ["aww"],
+  "patterns": [
+    { "include": "#block_comment" },
+    { "include": "#line_comment" },
+    { "include": "#string" },
+    { "include": "#import" },
+    { "include": "#type_signature" },
+    { "include": "#function_definition" },
+    { "include": "#operators" },
+    { "include": "#qualified_value" },
+    { "include": "#parens" },
+    { "include": "#identifiers" }
+  ],
+  "repository": {
+    "line_comment": {
+      "name": "comment.line.double-dash.awsum",
+      "begin": "--",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.comment.awsum" }
+      },
+      "end": "$"
+    },
+    "block_comment": {
+      "name": "comment.block.awsum",
+      "begin": "\\{-(?!#)",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.comment.begin.awsum" }
+      },
+      "end": "-\\}",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.comment.end.awsum" }
+      },
+      "patterns": [{ "include": "#block_comment" }]
+    },
+
+    "string": {
+      "name": "string.quoted.double.awsum",
+      "begin": "\"",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.awsum" }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.awsum" }
+      },
+      "patterns": [
+        {
+          "name": "constant.character.escape.awsum",
+          "match": "\\\\(?:[ntr\"\\\\0])"
+        },
+        {
+          "name": "invalid.illegal.escape.awsum",
+          "match": "\\\\."
+        }
+      ]
+    },
+
+    "import": {
+      "name": "meta.import.awsum",
+      "begin": "^\\s*(import)\\b",
+      "beginCaptures": {
+        "1": { "name": "keyword.control.import.awsum" }
+      },
+      "end": "$",
+      "patterns": [
+        { "include": "#module_path" },
+        { "include": "#line_comment" }
+      ]
+    },
+
+    "module_path": {
+      "patterns": [
+        {
+          "name": "entity.name.namespace.awsum",
+          "match": "\\b[A-Z][\\w']*\\b"
+        },
+        {
+          "name": "punctuation.accessor.dot.awsum",
+          "match": "\\."
+        }
+      ]
+    },
+
+    "type_signature": {
+      "name": "meta.type-signature.awsum",
+      "begin": "^\\s*([a-z][\\w']*)\\s*(:)\\s*",
+      "beginCaptures": {
+        "1": { "name": "entity.name.function.awsum" },
+        "2": { "name": "punctuation.separator.type.annotation.awsum" }
+      },
+      "end": "(?=\\s*(?:$|--))",
+      "patterns": [{ "include": "#type_expr" }]
+    },
+
+    "type_expr": {
+      "patterns": [
+        {
+          "name": "keyword.operator.arrow.awsum",
+          "match": "->"
+        },
+        {
+          "name": "support.type.awsum",
+          "match": "\\b(?:[A-Z][\\w']*)(?:\\.(?:[A-Z][\\w']*))*\\b"
+        },
+        {
+          "name": "variable.type.awsum",
+          "match": "\\b[a-z][\\w']*\\b"
+        },
+        { "include": "#parens" }
+      ]
+    },
+
+    "function_definition": {
+      "name": "meta.function.definition.awsum",
+      "begin": "^\\s*([a-z][\\w']*)\\b(?!\\s*:)",
+      "beginCaptures": {
+        "1": { "name": "entity.name.function.awsum" }
+      },
+      "end": "(=)",
+      "endCaptures": {
+        "1": { "name": "keyword.operator.assignment.awsum" }
+      },
+      "patterns": [
+        {
+          "name": "variable.parameter.function.awsum",
+          "match": "\\b[a-z][\\w']*\\b"
+        }
+      ]
+    },
+
+    "qualified_value": {
+      "name": "meta.qualified.value.awsum",
+      "match": "\\b(?:[A-Z][\\w']*\\.)+([a-z][\\w']*)\\b",
+      "captures": {
+        "1": { "name": "support.function.awsum" }
+      }
+    },
+
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.concat.awsum",
+          "match": "\\+\\+"
+        },
+        {
+          "name": "punctuation.separator.type.annotation.awsum",
+          "match": ":"
+        },
+        {
+          "name": "punctuation.accessor.dot.awsum",
+          "match": "\\."
+        }
+      ]
+    },
+
+    "parens": {
+      "patterns": [
+        { "name": "punctuation.section.parens.begin.awsum", "match": "\\(" },
+        { "name": "punctuation.section.parens.end.awsum", "match": "\\)" }
+      ]
+    },
+
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "variable.other.readwrite.awsum",
+          "match": "\\b[a-z][\\w']*\\b"
+        },
+        {
+          "name": "entity.name.type.awsum",
+          "match": "\\b[A-Z][\\w']*\\b"
+        }
+      ]
+    }
+  }
+}
