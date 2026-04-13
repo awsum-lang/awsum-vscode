@@ -97,6 +97,7 @@
         { "name": "keyword.operator.assignment.awsum", "match": "=" },
         { "name": "keyword.operator.pipe.awsum", "match": "\\|" },
         { "name": "entity.name.type.awsum", "match": "\\b[A-Z][\\w']*\\b" },
+        { "name": "variable.type.awsum", "match": "\\b[a-z][\\w']*\\b" },
         { "include": "#line_comment" }
       ]
     },

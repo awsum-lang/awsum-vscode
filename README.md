@@ -1,9 +1,15 @@
 # Awsum language support for Visual Studio Code
 
+## Features
+
+- **Syntax highlighting** — TextMate grammar for `.aww` files (type declarations, constructors, pattern matching, type parameters, qualified names, comments, strings)
+- **Code formatting** — runs `awsum format` on save
+- **Error diagnostics** — inline red underlines from `awsum check --json`, updated on open, save, and as-you-type
+
 ## Prerequisites
 
 - Install `awsum` CLI: https://awsum-lang.org
-- Make sure tha the `awsum` binary is in `$PATH` or specify the path manually:
+- Make sure that the `awsum` binary is in `$PATH` or specify the path manually:
   - Settings → `Awsum › Format: Path` (e.g. `/usr/local/bin/awsum`).
 
 ## Usage
@@ -18,6 +24,8 @@
   }
 }
 ```
+
+- Error diagnostics work automatically — open any `.aww` file and errors will appear as red underlines in the editor
 
 ## Development
 
