@@ -7,8 +7,10 @@
     { "include": "#line_comment" },
     { "include": "#string" },
     { "include": "#import" },
+    { "include": "#type_declaration" },
     { "include": "#type_signature" },
     { "include": "#function_definition" },
+    { "include": "#keywords" },
     { "include": "#operators" },
     { "include": "#qualified_value" },
     { "include": "#parens" },
@@ -84,6 +86,21 @@
       ]
     },
 
+    "type_declaration": {
+      "name": "meta.type-declaration.awsum",
+      "begin": "^\\s*(type)\\b",
+      "beginCaptures": {
+        "1": { "name": "keyword.other.type-definition.awsum" }
+      },
+      "end": "$",
+      "patterns": [
+        { "name": "keyword.operator.assignment.awsum", "match": "=" },
+        { "name": "keyword.operator.pipe.awsum", "match": "\\|" },
+        { "name": "entity.name.type.awsum", "match": "\\b[A-Z][\\w']*\\b" },
+        { "include": "#line_comment" }
+      ]
+    },
+
     "type_signature": {
       "name": "meta.type-signature.awsum",
       "begin": "^\\s*([a-z][\\w']*)\\s*(:)\\s*",
@@ -139,11 +156,32 @@
       }
     },
 
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.case.awsum",
+          "match": "\\bcase\\b"
+        },
+        {
+          "name": "keyword.control.of.awsum",
+          "match": "\\bof\\b"
+        }
+      ]
+    },
+
     "operators": {
       "patterns": [
         {
           "name": "keyword.operator.concat.awsum",
           "match": "\\+\\+"
+        },
+        {
+          "name": "keyword.operator.arrow.awsum",
+          "match": "->"
+        },
+        {
+          "name": "keyword.operator.pipe.awsum",
+          "match": "\\|"
         },
         {
           "name": "punctuation.separator.type.annotation.awsum",
