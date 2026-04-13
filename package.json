@@ -28,7 +28,11 @@
         "extensions": [
           ".aww"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/awsum-light.svg",
+          "dark": "./icons/awsum.svg"
+        }
       }
     ],
     "grammars": [
@@ -53,6 +57,7 @@
     "dist",
     "syntaxes",
     "language-configuration.json",
+    "icons",
     "README.md",
     "LICENSE"
   ],
