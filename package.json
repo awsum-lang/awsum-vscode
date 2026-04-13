@@ -12,6 +12,7 @@
     "type": "git",
     "url": "https://github.com/awsum-lang/awsum-vscode.git"
   },
+  "icon": "icons/extension-icon.png",
   "categories": [
     "Programming Languages",
     "Formatters"
