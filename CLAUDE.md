@@ -24,7 +24,9 @@ dist/extension.js             # Compiled output
   - Comments: `--` (line), `{- -}` (block, nested)
   - Strings with escape sequences
   - Type signatures and function definitions
+  - Type declarations with type parameters and constructor definitions
   - Module-qualified names
+  - `case`/`of` keywords and pattern matching
 
 - **Formatting**: Via external `awsum` CLI
   - Invokes `awsum format <file>`

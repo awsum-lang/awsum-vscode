@@ -5,12 +5,14 @@
   "publisher": "awsum-lang",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.104.0"
+    "node": ">=24.14",
+    "vscode": "^1.115.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/awsum-lang/awsum-vscode.git"
   },
+  "icon": "icons/extension-icon.png",
   "categories": [
     "Programming Languages",
     "Formatters"
@@ -27,7 +29,11 @@
         "extensions": [
           ".aww"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/awsum-light.svg",
+          "dark": "./icons/awsum.svg"
+        }
       }
     ],
     "grammars": [
@@ -52,6 +58,7 @@
     "dist",
     "syntaxes",
     "language-configuration.json",
+    "icons",
     "README.md",
     "LICENSE"
   ],
@@ -61,9 +68,9 @@
     "package": "vsce package"
   },
   "devDependencies": {
-    "@types/node": "^24.3.1",
-    "@types/vscode": "^1.104.0",
-    "typescript": "^5.9.2",
-    "@vscode/vsce": "^3.6.0"
+    "@types/node": "^24.12.2",
+    "@types/vscode": "^1.115.0",
+    "typescript": "^5.9.3",
+    "@vscode/vsce": "^3.7.1"
   }
 }
