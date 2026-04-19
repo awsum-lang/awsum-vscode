@@ -2,9 +2,11 @@
 
 ## Features
 
-- **Syntax highlighting** — TextMate grammar for `.aww` files (type declarations, constructors, pattern matching, type parameters, qualified names, comments, strings)
+- **Syntax highlighting** — TextMate grammar for `.aww` files (type declarations, constructors, pattern matching, type parameters, qualified names, comments, strings, integer literals)
 - **Code formatting** — runs `awsum format` on save
 - **Error diagnostics** — inline red underlines from `awsum check --json`, updated on open, save, and as-you-type
+- **Outline & navigation** — Outline view, breadcrumbs, and `Ctrl+Shift+O` / `@` symbol search powered by `awsum symbols --json`
+- **Workspace symbol search** — `Ctrl+T` searches all top-level declarations across every `.aww` file in the workspace; the index refreshes automatically on save / create / delete
 
 ## Prerequisites
 
