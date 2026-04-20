@@ -71,13 +71,23 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  // Diagnostics provider.
+  // Diagnostics provider.  We push diagnostics in as the user edits, and
+  // attach quick-fix payloads on the side so the CodeActionProvider can
+  // surface them without re-invoking the CLI.
   const diagnostics = vscode.languages.createDiagnosticCollection("awsum");
+  const fixesIndex = new FixesIndex();
   context.subscriptions.push(diagnostics);
+  context.subscriptions.push(
+    vscode.languages.registerCodeActionsProvider(
+      selector,
+      new AwsumCodeActionProvider(fixesIndex),
+      { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix] }
+    )
+  );
 
   const checkDocument = (doc: vscode.TextDocument) => {
     if (doc.languageId === "awsum" && doc.uri.scheme === "file") {
-      runAwsumCheck(doc, diagnostics);
+      runAwsumCheck(doc, diagnostics, fixesIndex);
     }
   };
 
@@ -104,6 +114,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidChangeTextDocument((e) => checkDocumentDebounced(e.document)),
     vscode.workspace.onDidCloseTextDocument((doc) => {
       diagnostics.delete(doc.uri);
+      fixesIndex.clear(doc.uri);
       const key = doc.uri.toString();
       const timer = debounceTimers.get(key);
       if (timer) {
@@ -265,27 +276,94 @@ function execFileAsync(
 
 /**
  * JSON shape returned by `awsum check --json`:
- *   [{ startLine, startCol, endLine, endCol, message }]
+ *   [{ severity?, startLine, startCol, endLine, endCol, message, fixes? }]
+ *
+ * `severity` defaults to `"error"` when absent (older CLI builds).
+ * `fixes` is an optional array of { title, edits: [{range, newText}] }.
  *
  * Positions are 1-based; VS Code expects 0-based.
  */
-interface AwsumDiagnostic {
+interface AwsumRange {
   startLine: number;
   startCol: number;
   endLine: number;
   endCol: number;
+}
+
+interface AwsumEdit extends AwsumRange {
+  newText: string;
+}
+
+interface AwsumFix {
+  title: string;
+  edits: AwsumEdit[];
+}
+
+interface AwsumDiagnostic extends AwsumRange {
+  severity?: "error" | "warning";
   message: string;
+  fixes?: AwsumFix[];
 }
 
 /**
- * Run `awsum check --json <file>`, parse JSON output, and update diagnostics.
+ * Side-table mapping each document to the fixes for each diagnostic.
+ *
+ * VS Code's `Diagnostic` object has no place to stash structured fix
+ * payloads, so we keep a parallel index keyed by document URI and looked
+ * up by range from `provideCodeActions`. Updated on every check run.
+ */
+class FixesIndex {
+  // Stable key per (uri, range) so range-equality lookups don't rely on
+  // object identity (CodeAction passes back fresh Range instances).
+  private byUri = new Map<string, Map<string, AwsumFix[]>>();
+
+  set(uri: vscode.Uri, entries: { range: vscode.Range; fixes: AwsumFix[] }[]) {
+    const inner = new Map<string, AwsumFix[]>();
+    for (const { range, fixes } of entries) {
+      if (fixes.length > 0) inner.set(rangeKey(range), fixes);
+    }
+    this.byUri.set(uri.toString(), inner);
+  }
+
+  get(uri: vscode.Uri, range: vscode.Range): AwsumFix[] {
+    return this.byUri.get(uri.toString())?.get(rangeKey(range)) ?? [];
+  }
+
+  clear(uri: vscode.Uri) {
+    this.byUri.delete(uri.toString());
+  }
+}
+
+function rangeKey(r: vscode.Range): string {
+  return `${r.start.line}:${r.start.character}-${r.end.line}:${r.end.character}`;
+}
+
+function awsumRangeToVsCode(r: AwsumRange): vscode.Range {
+  return new vscode.Range(
+    r.startLine - 1,
+    r.startCol - 1,
+    r.endLine - 1,
+    r.endCol - 1
+  );
+}
+
+function awsumSeverityToVsCode(s: AwsumDiagnostic["severity"]): vscode.DiagnosticSeverity {
+  return s === "warning"
+    ? vscode.DiagnosticSeverity.Warning
+    : vscode.DiagnosticSeverity.Error;
+}
+
+/**
+ * Run `awsum check --json <file>`, parse JSON output, and update diagnostics
+ * + the fixes index.
  *
  * The CLI writes a JSON array to stdout even on error (exit code 1).
- * On success it writes `[]`.  We capture stdout regardless of exit code.
+ * On success it writes `[]`. We capture stdout regardless of exit code.
  */
 async function runAwsumCheck(
   document: vscode.TextDocument,
-  collection: vscode.DiagnosticCollection
+  collection: vscode.DiagnosticCollection,
+  fixesIndex: FixesIndex
 ): Promise<void> {
   const cfg = vscode.workspace.getConfiguration();
   const bin = (cfg.get<string>("awsum.format.path") || "awsum").trim();
@@ -305,26 +383,59 @@ async function runAwsumCheck(
     ]);
 
     const items: AwsumDiagnostic[] = JSON.parse(stdout);
-    const diags: vscode.Diagnostic[] = items.map((d) => {
-      const range = new vscode.Range(
-        d.startLine - 1,
-        d.startCol - 1,
-        d.endLine - 1,
-        d.endCol - 1
-      );
-      return new vscode.Diagnostic(range, d.message, vscode.DiagnosticSeverity.Error);
-    });
+    const diags: vscode.Diagnostic[] = [];
+    const fixEntries: { range: vscode.Range; fixes: AwsumFix[] }[] = [];
+    for (const d of items) {
+      const range = awsumRangeToVsCode(d);
+      diags.push(new vscode.Diagnostic(range, d.message, awsumSeverityToVsCode(d.severity)));
+      if (d.fixes && d.fixes.length > 0) {
+        fixEntries.push({ range, fixes: d.fixes });
+      }
+    }
 
     collection.set(document.uri, diags);
+    fixesIndex.set(document.uri, fixEntries);
   } catch {
     // Binary not found or other unexpected failure — clear stale diagnostics.
     collection.delete(document.uri);
+    fixesIndex.clear(document.uri);
   } finally {
     try {
       await fs.rm(tmpDir, { recursive: true, force: true });
     } catch {
       /* ignore */
     }
+  }
+}
+
+/**
+ * Surfaces compiler-supplied quick fixes (yellow lightbulb) for diagnostics
+ * carrying a `fixes` payload. The fix titles and edit ranges come straight
+ * from the CLI — the extension does no language-aware reasoning.
+ */
+class AwsumCodeActionProvider implements vscode.CodeActionProvider {
+  constructor(private fixesIndex: FixesIndex) {}
+
+  provideCodeActions(
+    document: vscode.TextDocument,
+    _range: vscode.Range | vscode.Selection,
+    context: vscode.CodeActionContext
+  ): vscode.CodeAction[] {
+    const actions: vscode.CodeAction[] = [];
+    for (const diag of context.diagnostics) {
+      const fixes = this.fixesIndex.get(document.uri, diag.range);
+      for (const fix of fixes) {
+        const action = new vscode.CodeAction(fix.title, vscode.CodeActionKind.QuickFix);
+        action.diagnostics = [diag];
+        const edit = new vscode.WorkspaceEdit();
+        for (const e of fix.edits) {
+          edit.replace(document.uri, awsumRangeToVsCode(e), e.newText);
+        }
+        action.edit = edit;
+        actions.push(action);
+      }
+    }
+    return actions;
   }
 }
 

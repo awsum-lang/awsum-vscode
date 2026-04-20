@@ -63,7 +63,7 @@
 
     "import": {
       "name": "meta.import.awsum",
-      "begin": "^\\s*(import)\\b",
+      "begin": "^(import)\\b",
       "beginCaptures": {
         "1": { "name": "keyword.control.import.awsum" }
       },
@@ -89,7 +89,7 @@
 
     "type_declaration": {
       "name": "meta.type-declaration.awsum",
-      "begin": "^\\s*(type)\\b",
+      "begin": "^(type)\\b",
       "beginCaptures": {
         "1": { "name": "keyword.other.type-definition.awsum" }
       },
@@ -97,15 +97,15 @@
       "patterns": [
         { "name": "keyword.operator.assignment.awsum", "match": "=" },
         { "name": "keyword.operator.pipe.awsum", "match": "\\|" },
-        { "name": "entity.name.type.awsum", "match": "\\b[A-Z][\\w']*\\b" },
-        { "name": "variable.type.awsum", "match": "\\b[a-z][\\w']*\\b" },
+        { "name": "entity.name.type.awsum", "match": "\\b_?[A-Z][\\w']*\\b" },
+        { "name": "variable.type.awsum", "match": "\\b[a-z_][\\w']*\\b" },
         { "include": "#line_comment" }
       ]
     },
 
     "type_signature": {
       "name": "meta.type-signature.awsum",
-      "begin": "^\\s*([a-z][\\w']*)\\s*(:)\\s*",
+      "begin": "^([a-z_][\\w']*)\\s*(:)\\s*",
       "beginCaptures": {
         "1": { "name": "entity.name.function.awsum" },
         "2": { "name": "punctuation.separator.type.annotation.awsum" }
@@ -122,11 +122,11 @@
         },
         {
           "name": "support.type.awsum",
-          "match": "\\b(?:[A-Z][\\w']*)(?:\\.(?:[A-Z][\\w']*))*\\b"
+          "match": "\\b(?:_?[A-Z][\\w']*)(?:\\.(?:_?[A-Z][\\w']*))*\\b"
         },
         {
           "name": "variable.type.awsum",
-          "match": "\\b[a-z][\\w']*\\b"
+          "match": "\\b[a-z_][\\w']*\\b"
         },
         { "include": "#parens" }
       ]
@@ -134,7 +134,7 @@
 
     "function_definition": {
       "name": "meta.function.definition.awsum",
-      "begin": "^\\s*([a-z][\\w']*)\\b(?!\\s*:)",
+      "begin": "^([a-z_][\\w']*)\\b(?!\\s*:)",
       "beginCaptures": {
         "1": { "name": "entity.name.function.awsum" }
       },
@@ -145,7 +145,7 @@
       "patterns": [
         {
           "name": "variable.parameter.function.awsum",
-          "match": "\\b[a-z][\\w']*\\b"
+          "match": "\\b[a-z_][\\w']*\\b"
         }
       ]
     },
@@ -211,12 +211,12 @@
     "identifiers": {
       "patterns": [
         {
-          "name": "variable.other.readwrite.awsum",
-          "match": "\\b[a-z][\\w']*\\b"
+          "name": "entity.name.type.awsum",
+          "match": "\\b_?[A-Z][\\w']*\\b"
         },
         {
-          "name": "entity.name.type.awsum",
-          "match": "\\b[A-Z][\\w']*\\b"
+          "name": "variable.other.readwrite.awsum",
+          "match": "\\b[a-z_][\\w']*\\b"
         }
       ]
     }
