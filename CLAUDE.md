@@ -35,10 +35,16 @@ dist/extension.js             # Compiled output
   - Configurable binary path
   - Triggered by the standard `editor.formatOnSave` setting
 
-- **Diagnostics (inline errors)**: Invokes `awsum check --json`
+- **Diagnostics (inline errors and warnings)**: Invokes `awsum check --json`
   - On open / save / text change (debounced 500ms)
   - Parses JSON diagnostics, pushes to `DiagnosticCollection`
+  - Reads the optional `severity` field (`"error"` | `"warning"`); maps to `vscode.DiagnosticSeverity` so warnings render yellow per theme
   - Writes the current buffer (possibly unsaved) to a temp file so checks see the latest content
+
+- **Quick fixes (lightbulb code actions)**: powered by the optional `fixes` array on each diagnostic
+  - Compiler-supplied: extension does no language-aware reasoning, just renders titles + applies `WorkspaceEdit`s straight from the JSON payload
+  - Stored in a `FixesIndex` keyed by `(uri, range)` since `vscode.Diagnostic` has no place to stash structured payloads
+  - Currently the unused-parameter warning ships two fixes: replace with `_` (drop the binding) or rename to `_name` (document as intentionally unused)
 
 - **Document symbols**: Invokes `awsum symbols --json`
   - Provides Outline panel, breadcrumbs, `Ctrl+Shift+O` / `@` symbol search
@@ -62,7 +68,7 @@ dist/extension.js             # Compiled output
 ## Extension Architecture
 
 - No Language Server (LSP) — lightweight CLI-based design
-- Five providers: `DocumentFormattingEditProvider`, `DocumentSymbolProvider`, `WorkspaceSymbolProvider`, `DiagnosticCollection` (push-based), plus TextMate grammar for highlighting
+- Six providers: `DocumentFormattingEditProvider`, `DocumentSymbolProvider`, `WorkspaceSymbolProvider`, `DiagnosticCollection` (push-based), `CodeActionProvider` (reads compiler-supplied fixes), plus TextMate grammar for highlighting
 - Temp file approach: CLI expects file paths, extension writes current buffer to a tempdir per invocation
 - Workspace symbol index runs on disk (not unsaved buffers) — refreshed on save + filesystem watcher events
 - Proper cancellation token support on formatting + document symbols
