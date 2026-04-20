@@ -11,6 +11,7 @@
     { "include": "#type_signature" },
     { "include": "#function_definition" },
     { "include": "#keywords" },
+    { "include": "#numeric_literal" },
     { "include": "#operators" },
     { "include": "#qualified_value" },
     { "include": "#parens" },
@@ -168,6 +169,11 @@
           "match": "\\bof\\b"
         }
       ]
+    },
+
+    "numeric_literal": {
+      "name": "constant.numeric.integer.awsum",
+      "match": "(?<![\\w'])-?\\d+(?![\\w'])"
     },
 
     "operators": {
