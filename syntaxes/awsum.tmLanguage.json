@@ -105,10 +105,11 @@
 
     "type_signature": {
       "name": "meta.type-signature.awsum",
-      "begin": "^([a-z_][\\w']*)\\s*(:)\\s*",
+      "begin": "^(?:([a-z_][\\w']*)|(\\(\\+\\+\\)))\\s*(:)\\s*",
       "beginCaptures": {
         "1": { "name": "entity.name.function.awsum" },
-        "2": { "name": "punctuation.separator.type.annotation.awsum" }
+        "2": { "name": "entity.name.function.awsum" },
+        "3": { "name": "punctuation.separator.type.annotation.awsum" }
       },
       "end": "(?=\\s*(?:$|--))",
       "patterns": [{ "include": "#type_expr" }]
@@ -134,9 +135,10 @@
 
     "function_definition": {
       "name": "meta.function.definition.awsum",
-      "begin": "^([a-z_][\\w']*)\\b(?!\\s*:)",
+      "begin": "^(?:([a-z_][\\w']*)\\b|(\\(\\+\\+\\)))(?!\\s*:)",
       "beginCaptures": {
-        "1": { "name": "entity.name.function.awsum" }
+        "1": { "name": "entity.name.function.awsum" },
+        "2": { "name": "entity.name.function.awsum" }
       },
       "end": "(=)",
       "endCaptures": {

@@ -376,9 +376,13 @@ async function runAwsumCheck(
   try {
     await fs.writeFile(tmpPath, document.getText(), "utf8");
 
+    // `awsum check` now requires --program-type. Only `cli` exists today;
+    // once awsum.json workspace config lands, this will come from there.
     const stdout = await execFileAsyncCapture(bin, [
       "check",
       "--json",
+      "--program-type",
+      "cli",
       tmpPath,
     ]);
 
