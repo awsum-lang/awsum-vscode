@@ -49,7 +49,7 @@
         "awsum.format.path": {
           "type": "string",
           "default": "awsum",
-          "description": "Path to the awsum binary (if not in PATH). For example: /usr/local/bin/awsum"
+          "description": "Path to the `awsum` binary (if not in PATH). For example: /usr/local/bin/awsum"
         }
       }
     }

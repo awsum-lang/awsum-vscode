@@ -3,13 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-The extension follows a versioning scheme `vD.E.F-awsum-vA.B.C` where `D.E.F` is the extension's own SemVer and `A.B.C` is the `awsum` compiler version it targets.
+`awsum-vscode` follows a versioning scheme `vD.E.F-awsum-vA.B.C` where `D.E.F` is its own SemVer and `A.B.C` is the `awsum` compiler version it targets.
 
 ## [Unreleased]
 
 ## [0.0.1-awsum-0.0.2] - 2026-04-24
 
-First release under the `vD.E.F-awsum-vA.B.C` versioning scheme, which explicitly pins each extension release to a compatible `awsum` compiler version. Compatible with `awsum` v0.0.2.
+First release under the `vD.E.F-awsum-vA.B.C` versioning scheme, which explicitly pins each `awsum-vscode` release to a compatible `awsum` compiler version. Compatible with `awsum` v0.0.2.
 
 ### Added
 

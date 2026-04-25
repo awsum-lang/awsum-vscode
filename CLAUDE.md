@@ -1,6 +1,6 @@
-# Awsum VSCode Extension
+# `awsum-vscode`
 
-VSCode extension for the Awsum programming language (`.aww` files): syntax highlighting, formatting, diagnostics, and document symbols — all backed by the external `awsum` CLI (no LSP).
+`awsum-vscode` is the VSCode extension for Awsum (`.aww` files): syntax highlighting, formatting, diagnostics, and document symbols — all backed by the external `awsum` CLI (no LSP).
 
 ## Quick Reference
 
@@ -61,7 +61,7 @@ dist/extension.js             # Compiled output
 
 ```json
 {
-  "awsum.format.path": "awsum" // Path to awsum binary (shared by formatter, check, symbols)
+  "awsum.format.path": "awsum" // Path to `awsum` binary (shared by formatter, check, symbols)
 }
 ```
 
