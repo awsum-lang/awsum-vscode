@@ -43,4 +43,4 @@ npm i
 npm run package
 ```
 
-- Install the extension manually: `Cmd + Shift + P` -> `Install from VSIX...`
+- Manually install `awsum-vscode`: `Cmd + Shift + P` -> `Install from VSIX...`

@@ -1,5 +1,5 @@
 /**
- * Awsum VS Code Extension – Formatting + Diagnostics + Document Symbols
+ * `awsum-vscode` – Formatting + Diagnostics + Document Symbols
  *
  * Responsibilities:
  *  - Register a DocumentFormattingEditProvider for the Awsum language.
@@ -38,22 +38,22 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.languages.registerDocumentFormattingEditProvider(
       selector,
-      new AwsumFormattingProvider()
-    )
+      new AwsumFormattingProvider(),
+    ),
   );
 
   // Document symbols provider (Outline view, breadcrumbs, @-symbol search).
   context.subscriptions.push(
     vscode.languages.registerDocumentSymbolProvider(
       selector,
-      new AwsumDocumentSymbolProvider()
-    )
+      new AwsumDocumentSymbolProvider(),
+    ),
   );
 
   // Workspace symbols provider (Ctrl+T: search symbols across all .aww files).
   const workspaceSymbols = new AwsumWorkspaceSymbolProvider();
   context.subscriptions.push(
-    vscode.languages.registerWorkspaceSymbolProvider(workspaceSymbols)
+    vscode.languages.registerWorkspaceSymbolProvider(workspaceSymbols),
   );
   workspaceSymbols.reindexAll(); // kick off background indexing
 
@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
       if (doc.languageId === "awsum" && doc.uri.scheme === "file") {
         workspaceSymbols.updateFile(doc.uri);
       }
-    })
+    }),
   );
 
   // Diagnostics provider.  We push diagnostics in as the user edits, and
@@ -81,8 +81,8 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.languages.registerCodeActionsProvider(
       selector,
       new AwsumCodeActionProvider(fixesIndex),
-      { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix] }
-    )
+      { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix] },
+    ),
   );
 
   const checkDocument = (doc: vscode.TextDocument) => {
@@ -102,7 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
       setTimeout(() => {
         debounceTimers.delete(key);
         checkDocument(doc);
-      }, 500)
+      }, 500),
     );
   };
 
@@ -111,7 +111,9 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.workspace.onDidOpenTextDocument(checkDocument),
     vscode.workspace.onDidSaveTextDocument(checkDocument),
-    vscode.workspace.onDidChangeTextDocument((e) => checkDocumentDebounced(e.document)),
+    vscode.workspace.onDidChangeTextDocument((e) =>
+      checkDocumentDebounced(e.document),
+    ),
     vscode.workspace.onDidCloseTextDocument((doc) => {
       diagnostics.delete(doc.uri);
       fixesIndex.clear(doc.uri);
@@ -121,7 +123,7 @@ export function activate(context: vscode.ExtensionContext) {
         clearTimeout(timer);
         debounceTimers.delete(key);
       }
-    })
+    }),
   );
 }
 
@@ -142,7 +144,7 @@ class AwsumFormattingProvider implements vscode.DocumentFormattingEditProvider {
   async provideDocumentFormattingEdits(
     document: vscode.TextDocument,
     _options: vscode.FormattingOptions,
-    token: vscode.CancellationToken
+    token: vscode.CancellationToken,
   ): Promise<vscode.TextEdit[]> {
     const cfg = vscode.workspace.getConfiguration();
     const bin = (cfg.get<string>("awsum.format.path") || "awsum").trim();
@@ -174,13 +176,13 @@ class AwsumFormattingProvider implements vscode.DocumentFormattingEditProvider {
       // 3) Replace the entire document.
       const fullRange = new vscode.Range(
         document.positionAt(0),
-        document.positionAt(original.length)
+        document.positionAt(original.length),
       );
 
       return [vscode.TextEdit.replace(fullRange, normalized)];
     } catch (err: any) {
       vscode.window.showErrorMessage(
-        `Awsum format error: ${err?.message ?? String(err)}`
+        `awsum format error: ${err?.message ?? String(err)}`,
       );
       return [];
     }
@@ -206,7 +208,7 @@ function escapeForRegExp(s: string): string {
 async function formatWithAwsum(
   awsumBin: string,
   text: string,
-  token: vscode.CancellationToken
+  token: vscode.CancellationToken,
 ): Promise<string | null> {
   // Write the buffer to a temp file because the CLI expects a file path.
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "awsum-"));
@@ -241,7 +243,7 @@ async function formatWithAwsum(
 function execFileAsync(
   file: string,
   args: string[],
-  opts: { token?: vscode.CancellationToken } = {}
+  opts: { token?: vscode.CancellationToken } = {},
 ): Promise<{ stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
     const child = execFile(
@@ -254,7 +256,7 @@ function execFileAsync(
         } else {
           resolve({ stdout, stderr });
         }
-      }
+      },
     );
 
     if (opts.token) {
@@ -343,11 +345,13 @@ function awsumRangeToVsCode(r: AwsumRange): vscode.Range {
     r.startLine - 1,
     r.startCol - 1,
     r.endLine - 1,
-    r.endCol - 1
+    r.endCol - 1,
   );
 }
 
-function awsumSeverityToVsCode(s: AwsumDiagnostic["severity"]): vscode.DiagnosticSeverity {
+function awsumSeverityToVsCode(
+  s: AwsumDiagnostic["severity"],
+): vscode.DiagnosticSeverity {
   return s === "warning"
     ? vscode.DiagnosticSeverity.Warning
     : vscode.DiagnosticSeverity.Error;
@@ -363,7 +367,7 @@ function awsumSeverityToVsCode(s: AwsumDiagnostic["severity"]): vscode.Diagnosti
 async function runAwsumCheck(
   document: vscode.TextDocument,
   collection: vscode.DiagnosticCollection,
-  fixesIndex: FixesIndex
+  fixesIndex: FixesIndex,
 ): Promise<void> {
   const cfg = vscode.workspace.getConfiguration();
   const bin = (cfg.get<string>("awsum.format.path") || "awsum").trim();
@@ -391,7 +395,13 @@ async function runAwsumCheck(
     const fixEntries: { range: vscode.Range; fixes: AwsumFix[] }[] = [];
     for (const d of items) {
       const range = awsumRangeToVsCode(d);
-      diags.push(new vscode.Diagnostic(range, d.message, awsumSeverityToVsCode(d.severity)));
+      diags.push(
+        new vscode.Diagnostic(
+          range,
+          d.message,
+          awsumSeverityToVsCode(d.severity),
+        ),
+      );
       if (d.fixes && d.fixes.length > 0) {
         fixEntries.push({ range, fixes: d.fixes });
       }
@@ -415,7 +425,7 @@ async function runAwsumCheck(
 /**
  * Surfaces compiler-supplied quick fixes (yellow lightbulb) for diagnostics
  * carrying a `fixes` payload. The fix titles and edit ranges come straight
- * from the CLI — the extension does no language-aware reasoning.
+ * from the CLI — `awsum-vscode` does no language-aware reasoning.
  */
 class AwsumCodeActionProvider implements vscode.CodeActionProvider {
   constructor(private fixesIndex: FixesIndex) {}
@@ -423,13 +433,16 @@ class AwsumCodeActionProvider implements vscode.CodeActionProvider {
   provideCodeActions(
     document: vscode.TextDocument,
     _range: vscode.Range | vscode.Selection,
-    context: vscode.CodeActionContext
+    context: vscode.CodeActionContext,
   ): vscode.CodeAction[] {
     const actions: vscode.CodeAction[] = [];
     for (const diag of context.diagnostics) {
       const fixes = this.fixesIndex.get(document.uri, diag.range);
       for (const fix of fixes) {
-        const action = new vscode.CodeAction(fix.title, vscode.CodeActionKind.QuickFix);
+        const action = new vscode.CodeAction(
+          fix.title,
+          vscode.CodeActionKind.QuickFix,
+        );
         action.diagnostics = [diag];
         const edit = new vscode.WorkspaceEdit();
         for (const e of fix.edits) {
@@ -450,10 +463,7 @@ class AwsumCodeActionProvider implements vscode.CodeActionProvider {
  * valid JSON to stdout.  Node's `execFile` treats non-zero as an error,
  * so we pull stdout from the error object.
  */
-function execFileAsyncCapture(
-  file: string,
-  args: string[]
-): Promise<string> {
+function execFileAsyncCapture(file: string, args: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
     execFile(file, args, { encoding: "utf8" }, (error, stdout) => {
       if (error) {
@@ -501,7 +511,7 @@ interface AwsumSymbol {
 class AwsumDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
   async provideDocumentSymbols(
     document: vscode.TextDocument,
-    token: vscode.CancellationToken
+    token: vscode.CancellationToken,
   ): Promise<vscode.DocumentSymbol[]> {
     const cfg = vscode.workspace.getConfiguration();
     const bin = (cfg.get<string>("awsum.format.path") || "awsum").trim();
@@ -516,7 +526,7 @@ class AwsumDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
       const { stdout } = await execFileAsync(
         bin,
         ["symbols", "--json", tmpPath],
-        { token }
+        { token },
       );
       if (token.isCancellationRequested) return [];
 
@@ -540,20 +550,20 @@ function toVsCodeSymbol(s: AwsumSymbol): vscode.DocumentSymbol {
     s.range.startLine - 1,
     s.range.startCol - 1,
     s.range.endLine - 1,
-    s.range.endCol - 1
+    s.range.endCol - 1,
   );
   const selectionRange = new vscode.Range(
     s.selectionRange.startLine - 1,
     s.selectionRange.startCol - 1,
     s.selectionRange.endLine - 1,
-    s.selectionRange.endCol - 1
+    s.selectionRange.endCol - 1,
   );
   const sym = new vscode.DocumentSymbol(
     s.name,
     "",
     mapKind(s.kind),
     range,
-    selectionRange
+    selectionRange,
   );
   sym.children = s.children.map(toVsCodeSymbol);
   return sym;
@@ -587,7 +597,7 @@ function mapKind(kind: AwsumSymbol["kind"]): vscode.SymbolKind {
  *  - Indexing is coarse: all files run concurrently; errors on individual
  *    files (e.g. parse failure) are swallowed so one broken file does not
  *    hide the rest of the workspace.
- *  - The cache is flat: hierarchical children from 'awsum symbols' are
+ *  - The cache is flat: hierarchical children from `awsum symbols` are
  *    flattened via depth-first walk.  Children are currently empty in the
  *    CLI output but the walk future-proofs the handling.
  */
@@ -608,14 +618,14 @@ class AwsumWorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
   private async doReindexAll(): Promise<void> {
     const files = await vscode.workspace.findFiles(
       "**/*.aww",
-      "**/{node_modules,.stack-work,.snapshots,dist-newstyle}/**"
+      "**/{node_modules,.stack-work,.snapshots,dist-newstyle}/**",
     );
     const bin = getBinPath();
     const entries = await Promise.all(
       files.map(async (uri) => {
         const syms = await fetchSymbols(bin, uri.fsPath);
         return flattenSymbols(syms).map((symbol) => ({ symbol, uri }));
-      })
+      }),
     );
     this.cache = entries.flat();
   }
@@ -639,7 +649,7 @@ class AwsumWorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
 
   async provideWorkspaceSymbols(
     query: string,
-    _token: vscode.CancellationToken
+    _token: vscode.CancellationToken,
   ): Promise<vscode.SymbolInformation[]> {
     // Wait for the initial index to finish so the first Ctrl+T after
     // activation returns real results instead of an empty list.
@@ -653,15 +663,15 @@ class AwsumWorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
           symbol.range.startLine - 1,
           symbol.range.startCol - 1,
           symbol.range.endLine - 1,
-          symbol.range.endCol - 1
+          symbol.range.endCol - 1,
         );
         result.push(
           new vscode.SymbolInformation(
             symbol.name,
             mapKind(symbol.kind),
             "", // container name: none for top-level decls
-            new vscode.Location(uri, range)
-          )
+            new vscode.Location(uri, range),
+          ),
         );
       }
     }
@@ -670,7 +680,7 @@ class AwsumWorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
 }
 
 /**
- * Read the configured awsum binary path (shared with formatter and check).
+ * Read the configured `awsum` binary path (shared with formatter and check).
  */
 function getBinPath(): string {
   const cfg = vscode.workspace.getConfiguration();
@@ -683,10 +693,14 @@ function getBinPath(): string {
  */
 async function fetchSymbols(
   bin: string,
-  filePath: string
+  filePath: string,
 ): Promise<AwsumSymbol[]> {
   try {
-    const { stdout } = await execFileAsync(bin, ["symbols", "--json", filePath], {});
+    const { stdout } = await execFileAsync(
+      bin,
+      ["symbols", "--json", filePath],
+      {},
+    );
     return JSON.parse(stdout) as AwsumSymbol[];
   } catch {
     return [];
