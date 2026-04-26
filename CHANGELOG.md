@@ -19,6 +19,8 @@ Compatible with `awsum` v0.0.3. No user-facing changes to the extension itself; 
 
 - `CONTRIBUTING.md` — covers the dev-loop commands, the signed-commits requirement on `main` (with a working `~/.gitconfig` example for SSH signing), and the PR / CHANGELOG conventions.
 
+- `justfile` with a single user-facing `just release` recipe — checks out `main`, pulls, reads the version from `package.json`, asks the operator to type the version back as confirmation (private `manual-confirmation-input` helper), then creates an annotated tag and pushes it. Mirrors the same recipe in `awsum/justfile`.
+
 ## [0.0.1-awsum-0.0.2] - 2026-04-24
 
 First release under the `vD.E.F-awsum-vA.B.C` versioning scheme, which explicitly pins each `awsum-vscode` release to a compatible `awsum` compiler version. Compatible with `awsum` v0.0.2.
