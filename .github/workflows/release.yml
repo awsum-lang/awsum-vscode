@@ -63,7 +63,7 @@ jobs:
       # Users verify with:
       #   gh attestation verify awsum-vscode-X.Y.Z.vsix --repo awsum-lang/awsum-vscode
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: dist/*.vsix
 
