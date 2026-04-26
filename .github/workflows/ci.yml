@@ -2,6 +2,11 @@ name: CI
 
 on:
   workflow_call:
+    inputs:
+      upload-artifacts:
+        description: "Upload the built .vsix as a workflow artifact (consumed by the release workflow)."
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -22,3 +27,17 @@ jobs:
 
       - name: Package
         run: npm run package
+
+      - name: Read version
+        if: inputs.upload-artifacts
+        id: version
+        run: echo "value=$(node -p 'require(\"./package.json\").version')" >> "$GITHUB_OUTPUT"
+
+      - name: Upload .vsix artifact
+        if: inputs.upload-artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: awsum-vscode-${{ steps.version.outputs.value }}-vsix
+          path: "*.vsix"
+          if-no-files-found: error
+          retention-days: 7
