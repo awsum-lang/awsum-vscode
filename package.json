@@ -52,6 +52,12 @@
           "description": "Path to the `awsum` binary (if not in PATH). For example: /usr/local/bin/awsum"
         }
       }
+    },
+    "configurationDefaults": {
+      "[awsum]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "awsum-lang.awsum-vscode"
+      }
     }
   },
   "files": [

@@ -8,13 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-## [0.0.3-0] - 2026-04-26
+## [0.0.3-0] - 2026-04-27
 
 Compatible with `awsum` v0.0.3. No user-facing changes to the extension itself; this release tracks the compiler version bump and ships the release / supply-chain infrastructure built up since 0.0.1.
 
 ### Added
 
 - Release workflow: pushing a `v*` tag builds the extension and publishes a GitHub Release with the `.vsix` attached. Tag and `package.json` version must match, or the run fails before the build.
+- Default formatter and format-on-save for `.aww` files are now contributed by the extension itself (via `contributes.configurationDefaults` in `package.json`). Users no longer need to add `"[awsum]": { "editor.formatOnSave": true, "editor.defaultFormatter": "awsum-lang.awsum-vscode" }` to their `settings.json` — these become the defaults the moment the extension is installed, and can still be overridden per user / workspace.
 
 - Build provenance via `actions/attest-build-provenance@v4` on the published `.vsix` — each release asset gets a Sigstore-signed attestation tying it to the release workflow run and the tagged commit. Users verify with `gh attestation verify awsum-vscode-X.Y.Z.vsix --repo awsum-lang/awsum-vscode`.
 
