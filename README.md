@@ -14,6 +14,12 @@
 - Make sure that the `awsum` binary is in `$PATH` or specify the path manually:
   - Settings → `Awsum › Format: Path` (e.g. `/usr/local/bin/awsum`).
 
+## Versioning
+
+`awsum-vscode` versions are `A.B.C.N` where `A.B.C` matches the `awsum` compiler version the build targets and `N` is the extension's iteration counter under that compiler version. For example, `0.0.3.2` is the third build of the extension for `awsum` 0.0.3.
+
+Only the latest `awsum` release is supported. If your `awsum` version is older, either update `awsum` or pick a matching extension build through VSCode's "Install Another Version".
+
 ## Usage
 
 - Enable format on save in `settings.json`
