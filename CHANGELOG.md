@@ -4,13 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-`awsum-vscode` versions are `A.B.C-N` where `A.B.C` is the `awsum` compiler version the build targets and `N` is the extension's iteration counter under that compiler version (starting at `0`). The `-N` suffix is a semver pre-release tag — required because `vsce` only accepts standard semver, not 4-segment versions. Each release pins to exactly one `awsum` version; only the latest `awsum` release is supported. Every `awsum` release gets a corresponding `awsum-vscode` release, even when the extension itself has no changes.
+`awsum-vscode` is versioned 1:1 with the `awsum` compiler — the extension's `A.B.C` is exactly the `awsum` `A.B.C` it targets. Visual Studio Marketplace doesn't accept the kind of semver pre-release suffix we'd need to iterate the extension independently under a fixed compiler version, so we collapse the two version axes into one: every `awsum` release ships a matching extension release, the extension is never released ahead of the compiler, and only the latest `awsum` release is supported. (Releases before 0.0.3 used an `A.B.C-N` scheme; the entries below preserve those original tags.)
 
 ## [Unreleased]
 
-## [0.0.3-0] - 2026-04-27
+## [0.0.3] - 2026-04-27
 
-Compatible with `awsum` v0.0.3. No user-facing changes to the extension itself; this release tracks the compiler version bump and ships the release / supply-chain infrastructure built up since 0.0.1.
+No user-facing changes to the extension itself; this release tracks the compiler version bump and ships the release / supply-chain infrastructure built up since 0.0.1.
 
 ### Added
 
@@ -23,7 +23,7 @@ Compatible with `awsum` v0.0.3. No user-facing changes to the extension itself; 
 
 - `justfile` with a single user-facing `just release` recipe — checks out `main`, pulls, reads the version from `package.json`, asks the operator to type the version back as confirmation (private `manual-confirmation-input` helper), then creates an annotated tag and pushes it. Mirrors the same recipe in `awsum/justfile`.
 
-## [0.0.2-0] - 2026-04-24
+## [0.0.2] - 2026-04-24
 
 First release under the `A.B.C-N` versioning scheme, which pins each `awsum-vscode` build to a specific `awsum` compiler version. Compatible with `awsum` v0.0.2.
 

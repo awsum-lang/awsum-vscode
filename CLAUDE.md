@@ -76,8 +76,8 @@ dist/extension.js             # Compiled output
 ## Publishing
 
 ```bash
-npm run package              # Creates awsum-vscode-X.X.X.vsix
-code --install-extension awsum-vscode-X.X.X.vsix
+npm run package              # Creates awsum-vscode-A.B.C.vsix
+code --install-extension awsum-vscode-A.B.C.vsix
 ```
 
 ## Related Repositories

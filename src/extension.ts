@@ -705,8 +705,9 @@ function getBinPath(): string {
 // ────────────────────────────────────────────────────────────────────────────
 
 /**
- * `awsum-vscode` versions follow the scheme `A.B.C-N` where `A.B.C` matches the
- * `awsum` compiler version this build targets. On the first CLI usage we run
+ * Each `awsum-vscode` release pins to one `awsum` compiler version 1:1 — the
+ * extension's `A.B.C` is exactly the `awsum` `A.B.C` it targets (see README's
+ * "Versioning" section for the rationale). On the first CLI usage we run
  * `awsum --version` once per binary path and warn (non-blocking) if the
  * installed compiler doesn't match. Failures of `--version` itself are silent —
  * the actual CLI calls will surface "binary not found" errors on their own.
@@ -752,10 +753,9 @@ class VersionCheck {
   }
 }
 
-/** Extract the `A.B.C` awsum-compat prefix from an `A.B.C-N` extension version. */
+/** Validate the extension version is a plain `A.B.C` triple — that's also the awsum version we expect. */
 function parseExpectedAwsumVersion(extensionVersion: string): string | null {
-  const m = extensionVersion.match(/^(\d+\.\d+\.\d+)-\d+$/);
-  return m ? m[1] : null;
+  return /^\d+\.\d+\.\d+$/.test(extensionVersion) ? extensionVersion : null;
 }
 
 let versionCheck: VersionCheck | null = null;

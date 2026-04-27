@@ -16,7 +16,9 @@
 
 ## Versioning
 
-`awsum-vscode` versions are `A.B.C-N` where `A.B.C` matches the `awsum` compiler version the build targets and `N` is the extension's iteration counter under that compiler version. For example, `0.0.3-2` is the third build of the extension for `awsum` 0.0.3.
+`awsum-vscode` is versioned 1:1 with the `awsum` compiler — `awsum-vscode` `A.B.C` is built against `awsum` `A.B.C`, full stop. Every `awsum` release ships a matching extension release the same day, even when the extension itself has no changes; conversely, the extension is never released ahead of the compiler. If you need to ship a fix that's purely on the extension side, it waits for the next `awsum` release.
+
+The reason is unfortunate but unavoidable: Visual Studio Marketplace only accepts plain semver `A.B.C` (no 4th segment, no pre-release tags in the version that gets shown to users), so we can't iterate the extension independently under a fixed compiler version (`A.B.C-1`, `A.B.C-2`, …) while still publishing to Marketplace. Locking the extension version to the compiler version is the simplest scheme that keeps both registries happy and makes "which `awsum` does this extension want?" trivial to answer.
 
 Only the latest `awsum` release is supported. If your `awsum` version is older, either update `awsum` or pick a matching extension build through VSCode's "Install Another Version".
 
