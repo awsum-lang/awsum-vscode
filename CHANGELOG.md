@@ -3,13 +3,29 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-`awsum-vscode` follows a versioning scheme `vD.E.F-awsum-vA.B.C` where `D.E.F` is its own SemVer and `A.B.C` is the `awsum` compiler version it targets.
+
+`awsum-vscode` versions are `A.B.C-N` where `A.B.C` is the `awsum` compiler version the build targets and `N` is the extension's iteration counter under that compiler version (starting at `0`). The `-N` suffix is a semver pre-release tag — required because `vsce` only accepts standard semver, not 4-segment versions. Each release pins to exactly one `awsum` version; only the latest `awsum` release is supported. Every `awsum` release gets a corresponding `awsum-vscode` release, even when the extension itself has no changes.
 
 ## [Unreleased]
 
-## [0.0.1-awsum-0.0.2] - 2026-04-24
+## [0.0.3-0] - 2026-04-27
 
-First release under the `vD.E.F-awsum-vA.B.C` versioning scheme, which explicitly pins each `awsum-vscode` release to a compatible `awsum` compiler version. Compatible with `awsum` v0.0.2.
+Compatible with `awsum` v0.0.3. No user-facing changes to the extension itself; this release tracks the compiler version bump and ships the release / supply-chain infrastructure built up since 0.0.1.
+
+### Added
+
+- Release workflow: pushing a `v*` tag builds the extension and publishes a GitHub Release with the `.vsix` attached. Tag and `package.json` version must match, or the run fails before the build.
+- Default formatter and format-on-save for `.aww` files are now contributed by the extension itself (via `contributes.configurationDefaults` in `package.json`). Users no longer need to add `"[awsum]": { "editor.formatOnSave": true, "editor.defaultFormatter": "awsum-lang.awsum-vscode" }` to their `settings.json` — these become the defaults the moment the extension is installed, and can still be overridden per user / workspace.
+
+- Build provenance via `actions/attest-build-provenance@v4` on the published `.vsix` — each release asset gets a Sigstore-signed attestation tying it to the release workflow run and the tagged commit. Users verify with `gh attestation verify awsum-vscode-X.Y.Z.vsix --repo awsum-lang/awsum-vscode`.
+
+- `CONTRIBUTING.md` — covers the dev-loop commands, the signed-commits requirement on `main` (with a working `~/.gitconfig` example for SSH signing), and the PR / CHANGELOG conventions.
+
+- `justfile` with a single user-facing `just release` recipe — checks out `main`, pulls, reads the version from `package.json`, asks the operator to type the version back as confirmation (private `manual-confirmation-input` helper), then creates an annotated tag and pushes it. Mirrors the same recipe in `awsum/justfile`.
+
+## [0.0.2-0] - 2026-04-24
+
+First release under the `A.B.C-N` versioning scheme, which pins each `awsum-vscode` build to a specific `awsum` compiler version. Compatible with `awsum` v0.0.2.
 
 ### Added
 

@@ -29,6 +29,15 @@ import * as path from "path";
  * Extension activation – registers the formatting provider for Awsum documents.
  */
 export function activate(context: vscode.ExtensionContext) {
+  versionCheck = new VersionCheck(context.extension.packageJSON.version);
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration("awsum.format.path")) {
+        versionCheck?.invalidate();
+      }
+    }),
+  );
+
   const selector: vscode.DocumentSelector = {
     language: "awsum",
     scheme: "file",
@@ -146,8 +155,7 @@ class AwsumFormattingProvider implements vscode.DocumentFormattingEditProvider {
     _options: vscode.FormattingOptions,
     token: vscode.CancellationToken,
   ): Promise<vscode.TextEdit[]> {
-    const cfg = vscode.workspace.getConfiguration();
-    const bin = (cfg.get<string>("awsum.format.path") || "awsum").trim();
+    const bin = getBinPath();
 
     // Current buffer contents.
     const original = document.getText();
@@ -369,8 +377,7 @@ async function runAwsumCheck(
   collection: vscode.DiagnosticCollection,
   fixesIndex: FixesIndex,
 ): Promise<void> {
-  const cfg = vscode.workspace.getConfiguration();
-  const bin = (cfg.get<string>("awsum.format.path") || "awsum").trim();
+  const bin = getBinPath();
 
   // Write the current (possibly unsaved) buffer to a temp file so we check
   // the latest content, not just what's on disk.
@@ -513,8 +520,7 @@ class AwsumDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     document: vscode.TextDocument,
     token: vscode.CancellationToken,
   ): Promise<vscode.DocumentSymbol[]> {
-    const cfg = vscode.workspace.getConfiguration();
-    const bin = (cfg.get<string>("awsum.format.path") || "awsum").trim();
+    const bin = getBinPath();
 
     // Write current buffer to temp file so the CLI sees unsaved edits.
     const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "awsum-symbols-"));
@@ -680,12 +686,79 @@ class AwsumWorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
 }
 
 /**
- * Read the configured `awsum` binary path (shared with formatter and check).
+ * Read the configured `awsum` binary path (shared by all CLI call sites).
+ *
+ * Side-effect: kicks off a cached compatibility check (extension version vs.
+ * `awsum --version`) on first use of each binary path. Subsequent calls are
+ * no-ops, so the actual `awsum --version` spawn happens at most once per
+ * binary per session (or once after a config change that invalidates it).
  */
 function getBinPath(): string {
   const cfg = vscode.workspace.getConfiguration();
-  return (cfg.get<string>("awsum.format.path") || "awsum").trim();
+  const bin = (cfg.get<string>("awsum.format.path") || "awsum").trim();
+  versionCheck?.ensure(bin);
+  return bin;
 }
+
+// ────────────────────────────────────────────────────────────────────────────
+// Compatibility check (extension version ↔ awsum version)
+// ────────────────────────────────────────────────────────────────────────────
+
+/**
+ * `awsum-vscode` versions follow the scheme `A.B.C-N` where `A.B.C` matches the
+ * `awsum` compiler version this build targets. On the first CLI usage we run
+ * `awsum --version` once per binary path and warn (non-blocking) if the
+ * installed compiler doesn't match. Failures of `--version` itself are silent —
+ * the actual CLI calls will surface "binary not found" errors on their own.
+ */
+class VersionCheck {
+  private checks = new Map<string, Promise<void>>();
+  private warned = new Set<string>();
+
+  constructor(private extensionVersion: string) {}
+
+  ensure(bin: string): void {
+    if (this.checks.has(bin)) return;
+    this.checks.set(bin, this.runCheck(bin));
+  }
+
+  invalidate(): void {
+    // Drop cached checks so the new binary path gets verified.
+    // `warned` is intentionally not cleared — if the user has already seen
+    // the warning for a given bin during this session, no need to re-spam.
+    this.checks.clear();
+  }
+
+  private async runCheck(bin: string): Promise<void> {
+    const expected = parseExpectedAwsumVersion(this.extensionVersion);
+    if (!expected) return;
+
+    let actual: string;
+    try {
+      const { stdout } = await execFileAsync(bin, ["--version"], {});
+      const m = stdout.match(/(\d+\.\d+\.\d+)/);
+      if (!m) return;
+      actual = m[1];
+    } catch {
+      return;
+    }
+
+    if (actual !== expected && !this.warned.has(bin)) {
+      this.warned.add(bin);
+      vscode.window.showWarningMessage(
+        `awsum-vscode ${this.extensionVersion} targets awsum ${expected}, but the installed awsum is ${actual}. Behavior may be unpredictable — update awsum or install a matching awsum-vscode build.`,
+      );
+    }
+  }
+}
+
+/** Extract the `A.B.C` awsum-compat prefix from an `A.B.C-N` extension version. */
+function parseExpectedAwsumVersion(extensionVersion: string): string | null {
+  const m = extensionVersion.match(/^(\d+\.\d+\.\d+)-\d+$/);
+  return m ? m[1] : null;
+}
+
+let versionCheck: VersionCheck | null = null;
 
 /**
  * Run `awsum symbols --json <file>` and parse the result.

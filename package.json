@@ -3,7 +3,7 @@
   "displayName": "Awsum",
   "description": "Awsum language support for Visual Studio Code",
   "publisher": "awsum-lang",
-  "version": "0.0.1-awsum-0.0.2",
+  "version": "0.0.3-0",
   "engines": {
     "node": ">=24.14",
     "vscode": "^1.115.0"
@@ -51,6 +51,12 @@
           "default": "awsum",
           "description": "Path to the `awsum` binary (if not in PATH). For example: /usr/local/bin/awsum"
         }
+      }
+    },
+    "configurationDefaults": {
+      "[awsum]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "awsum-lang.awsum-vscode"
       }
     }
   },
