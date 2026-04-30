@@ -169,6 +169,14 @@
         {
           "name": "keyword.control.of.awsum",
           "match": "\\bof\\b"
+        },
+        {
+          "name": "keyword.control.do.awsum",
+          "match": "\\bdo\\b"
+        },
+        {
+          "name": "keyword.control.let.awsum",
+          "match": "\\blet\\b"
         }
       ]
     },
@@ -187,6 +195,14 @@
         {
           "name": "keyword.operator.arrow.awsum",
           "match": "->"
+        },
+        {
+          "name": "keyword.operator.bind.awsum",
+          "match": "<-"
+        },
+        {
+          "name": "keyword.operator.lambda.awsum",
+          "match": "\\\\"
         },
         {
           "name": "keyword.operator.pipe.awsum",
