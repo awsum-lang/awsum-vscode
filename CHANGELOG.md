@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Syntax highlighting for the new surface forms shipped in the compiler: lambda `\x -> e`, `do` blocks (with `let` and `<-`), and the structural-sum / type-ascription pattern syntax (`(x : T)`, `(A | B)`). Implemented as additions to `syntaxes/awsum.tmLanguage.json` mirroring the master grammar in `awsum/editors/textmate/`.
+
 ## [0.0.3] - 2026-04-27
 
 No user-facing changes to the extension itself; this release tracks the compiler version bump and ships the release / supply-chain infrastructure built up since 0.0.1.
