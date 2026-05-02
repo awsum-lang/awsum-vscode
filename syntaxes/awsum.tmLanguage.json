@@ -10,6 +10,7 @@
     { "include": "#type_declaration" },
     { "include": "#type_signature" },
     { "include": "#function_definition" },
+    { "include": "#let_binding_ascription" },
     { "include": "#keywords" },
     { "include": "#numeric_literal" },
     { "include": "#operators" },
@@ -160,6 +161,15 @@
       }
     },
 
+    "let_binding_ascription": {
+      "comment": "Highlights the `:` in `let n : T = …` (and the let keyword in the same hit) so the ascription separator gets the same scope as the one in top-level signatures. The type itself isn't entered as a region — the trailing `T = …` is handled by ordinary identifier / operator rules. Matches the standalone `let-in` form; subsequent bindings in the multi-binding layout (no leading `let`) keep the plain identifier coloring.",
+      "match": "\\b(let)\\s+([a-z_][\\w']*)\\s*(:)",
+      "captures": {
+        "1": { "name": "keyword.control.let.awsum" },
+        "3": { "name": "punctuation.separator.type.annotation.awsum" }
+      }
+    },
+
     "keywords": {
       "patterns": [
         {
@@ -176,7 +186,7 @@
         },
         {
           "name": "keyword.control.let.awsum",
-          "match": "\\blet\\b"
+          "match": "\\b(?:let|in)\\b"
         }
       ]
     },
