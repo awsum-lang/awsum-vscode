@@ -193,7 +193,7 @@
 
     "numeric_literal": {
       "name": "constant.numeric.integer.awsum",
-      "match": "(?<![\\w'])-?\\d+(?![\\w'])"
+      "match": "(?<![\\w'])-?\\d+(?:_\\d+)*(?![\\w'])"
     },
 
     "operators": {
