@@ -90,9 +90,10 @@
 
     "type_declaration": {
       "name": "meta.type-declaration.awsum",
-      "begin": "^(type)\\b",
+      "begin": "^(?:(empty)\\s+)?(type)\\b",
       "beginCaptures": {
-        "1": { "name": "keyword.other.type-definition.awsum" }
+        "1": { "name": "keyword.other.type-definition.empty.awsum" },
+        "2": { "name": "keyword.other.type-definition.awsum" }
       },
       "end": "$",
       "patterns": [
