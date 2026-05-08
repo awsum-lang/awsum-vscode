@@ -97,6 +97,7 @@
       "end": "$",
       "patterns": [
         { "name": "keyword.operator.assignment.awsum", "match": "=" },
+        { "name": "keyword.operator.pipe-forward.awsum", "match": "\\|>" },
         { "name": "keyword.operator.pipe.awsum", "match": "\\|" },
         { "name": "entity.name.type.awsum", "match": "\\b_?[A-Z][\\w']*\\b" },
         { "name": "variable.type.awsum", "match": "\\b[a-z_][\\w']*\\b" },
@@ -193,7 +194,7 @@
 
     "numeric_literal": {
       "name": "constant.numeric.integer.awsum",
-      "match": "(?<![\\w'])-?\\d+(?![\\w'])"
+      "match": "(?<![\\w'])-?\\d+(?:_\\d+)*(?![\\w'])"
     },
 
     "operators": {
@@ -213,6 +214,10 @@
         {
           "name": "keyword.operator.lambda.awsum",
           "match": "\\\\"
+        },
+        {
+          "name": "keyword.operator.pipe-forward.awsum",
+          "match": "\\|>"
         },
         {
           "name": "keyword.operator.pipe.awsum",
