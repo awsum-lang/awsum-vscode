@@ -46,7 +46,7 @@
     "configuration": {
       "title": "Awsum",
       "properties": {
-        "awsum.format.path": {
+        "awsum.path": {
           "type": "string",
           "default": "awsum",
           "description": "Path to the `awsum` binary (if not in PATH). For example: /usr/local/bin/awsum"
@@ -70,14 +70,19 @@
     "LICENSE"
   ],
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run bundle",
     "compile": "tsc -p .",
-    "package": "vsce package"
+    "bundle": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --target=node22 --minify",
+    "package": "npm run bundle && vsce package"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
     "@types/node": "^24.12.2",
     "@types/vscode": "^1.115.0",
-    "typescript": "^5.9.3",
-    "@vscode/vsce": "^3.7.1"
+    "@vscode/vsce": "^3.7.1",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.9.3"
   }
 }

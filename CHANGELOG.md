@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Migrated to Language Server Protocol.** `awsum-vscode` is now a thin LSP client to the `awsum lsp --stdio` server (a subcommand of the `awsum` compiler binary). Diagnostics, code actions, formatting, document symbols, and workspace symbols are all delivered by the server; the extension no longer spawns `awsum check --json` / `awsum format` / `awsum symbols --json` per request. Removed: `AwsumFormattingProvider`, `AwsumDocumentSymbolProvider`, `AwsumWorkspaceSymbolProvider`, `AwsumCodeActionProvider`, `FixesIndex`, `runAwsumCheck`, the per-call temp-file machinery, the 500ms debouncer. The version check (extension `A.B.C` ↔ compiler `A.B.C`) was reshaped: instead of a dedicated `awsum --version` spawn, the extension reads `serverInfo.version` from the standard LSP `initialize` response and warns on mismatch — same lockstep guarantee, one fewer subprocess per session. The user-facing setting was renamed from `awsum.format.path` to `awsum.path` — it never named "the formatter" specifically, it named the `awsum` binary, and that binary now hosts the LSP server too.
+
 ### Added
 
 - Syntax highlighting for the new surface forms shipped in the compiler: lambda `\x -> e`, `do` blocks (with `let` and `<-`), and the structural-sum / type-ascription pattern syntax (`(x : T)`, `(A | B)`). Implemented as additions to `syntaxes/awsum.tmLanguage.json` mirroring the master grammar in `awsum/editors/textmate/`.
