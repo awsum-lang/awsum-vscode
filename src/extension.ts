@@ -16,9 +16,11 @@
  *   - `language-configuration.json` — comments, brackets, auto-close.
  *   - The `awsum.path` setting — points at the binary that the
  *     extension spawns as `awsum lsp --stdio`.
- *   - Version-mismatch warning — read `serverInfo.version` from the
- *     LSP `initialize` response, compare against the manifest version.
- *     Lockstep `awsum-vscode A.B.C` ↔ `awsum A.B.C`.
+ *   - Lockstep version declaration — pass `expectedAwsumVersion` in
+ *     `initializationOptions`. The server compares against its own
+ *     version and pushes a `window/showMessage` warning on mismatch
+ *     (same code path runs for any LSP client that opts in: Zed,
+ *     Helix, …). Lockstep `awsum-vscode A.B.C` ↔ `awsum A.B.C`.
  */
 
 import * as vscode from "vscode";
@@ -34,6 +36,7 @@ let client: LanguageClient | undefined;
 export async function activate(context: vscode.ExtensionContext) {
   const cfg = vscode.workspace.getConfiguration();
   const bin = (cfg.get<string>("awsum.path") || "awsum").trim();
+  const extensionVersion: string = context.extension.packageJSON.version;
 
   // `serverOptions` describes how the language client should spawn the
   // server. We launch the configured `awsum` binary with the `lsp`
@@ -48,8 +51,7 @@ export async function activate(context: vscode.ExtensionContext) {
   };
 
   // `clientOptions` tells the language client which documents the
-  // server should see. Filtering by `language: "awsum"` matches the
-  // language ID declared in `package.json` for `.aww` files.
+  // server should see plus the cross-handshake initialization payload.
   const clientOptions: LanguageClientOptions = {
     documentSelector: [{ scheme: "file", language: "awsum" }],
     // Keep the diagnostic source identifier in sync with what the
@@ -57,6 +59,19 @@ export async function activate(context: vscode.ExtensionContext) {
     // VS Code Problems panel groups diagnostics under one entry per
     // language rather than one per file.
     diagnosticCollectionName: "awsum",
+    // Hints the server reads from `initialize.params.initializationOptions`:
+    //
+    //   - `expectedAwsumVersion`: the server compares with its own
+    //     (compiler) version and warns on mismatch.
+    //   - `preferButtonsOverLinks: true`: VS Code does not auto-linkify
+    //     URLs in notifications, but reliably routes
+    //     `window/showDocument` to `vscode.env.openExternal`. Tell the
+    //     server to use a `window/showMessageRequest` action button
+    //     instead of inlining the URL — clicking opens the page.
+    initializationOptions: {
+      expectedAwsumVersion: extensionVersion,
+      preferButtonsOverLinks: true,
+    },
   };
 
   client = new LanguageClient(
@@ -66,50 +81,18 @@ export async function activate(context: vscode.ExtensionContext) {
     clientOptions,
   );
 
-  const extensionVersion: string = context.extension.packageJSON.version;
-
   // Restart the client when the user changes the binary path so the
-  // new path is picked up without an editor reload. Re-check the version
-  // after restart in case the new binary reports a different version.
+  // new path is picked up without an editor reload.
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(async (e) => {
       if (e.affectsConfiguration("awsum.path") && client) {
         await client.stop();
         await safeStart(client, bin);
-        warnOnVersionMismatch(client, extensionVersion);
       }
     }),
   );
 
   await safeStart(client, bin);
-  warnOnVersionMismatch(client, extensionVersion);
-}
-
-/**
- * Lockstep version check. The extension version (`A.B.C` from
- * `package.json`) is also the `awsum` compiler version it targets — see
- * the README's Versioning section for why we collapse the two axes into
- * one. The server reports its own version in the standard LSP
- * `initialize` response (`result.serverInfo.version`); if they don't
- * match, surface a non-blocking warning so the user knows behaviour
- * may diverge from what the extension was built against.
- */
-function warnOnVersionMismatch(
-  c: LanguageClient,
-  extensionVersion: string,
-): void {
-  // Validate the extension version is a plain `A.B.C` triple — that's
-  // also the awsum version we expect. Anything else (pre-release tag,
-  // dirty version) opts out of the check entirely.
-  if (!/^\d+\.\d+\.\d+$/.test(extensionVersion)) return;
-  const actual = c.initializeResult?.serverInfo?.version;
-  if (!actual) return;
-  if (actual === extensionVersion) return;
-  vscode.window.showWarningMessage(
-    `awsum-vscode ${extensionVersion} targets awsum ${extensionVersion}, ` +
-      `but the installed awsum is ${actual}. ` +
-      `Behavior may be unpredictable — update awsum or install a matching awsum-vscode build.`,
-  );
 }
 
 /**
