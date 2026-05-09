@@ -24,18 +24,7 @@ Only the latest `awsum` release is supported. If your `awsum` version is older, 
 
 ## Usage
 
-- Enable format on save in `settings.json`
-
-```json
-{
-  "[awsum]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "awsum-lang.awsum-vscode"
-  }
-}
-```
-
-- Error diagnostics work automatically — open any `.aww` file and errors will appear as red underlines in the editor
+- Format on save and error diagnostics work automatically — open any `.aww` file and errors will appear as red underlines in the editor
 
 ## Development
 

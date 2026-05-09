@@ -1,6 +1,6 @@
 # `awsum-vscode`
 
-`awsum-vscode` is the VSCode extension for Awsum (`.aww` files): syntax highlighting, formatting, diagnostics, and document symbols — all backed by the external `awsum` CLI (no LSP).
+`awsum-vscode` is the VSCode extension for Awsum (`.aww` files). It is a thin LSP client to the bundled `awsum lsp` server — every diagnostic, code action, format edit, document symbol, and workspace symbol is computed inside the `awsum` compiler binary and pushed over LSP.
 
 ## Quick Reference
 
@@ -12,66 +12,36 @@ npm run package    # Create .vsix package
 ## Structure
 
 ```
-src/extension.ts              # Main extension (formatter, diagnostics, symbols)
-syntaxes/awsum.tmLanguage.json # TextMate grammar
-language-configuration.json    # Comment/bracket config
-dist/extension.js             # Compiled output
+src/extension.ts                # LSP client (vscode-languageclient → awsum lsp)
+syntaxes/awsum.tmLanguage.json  # TextMate grammar (VS Code's primary highlighter)
+language-configuration.json     # Comment / bracket / auto-close config
+dist/extension.js               # Compiled output
 ```
 
-## Features
+## Features (all delivered through `awsum lsp`)
 
-- **Syntax Highlighting**: Full TextMate grammar
-  - Comments: `--` (line), `{- -}` (block, nested)
-  - Strings with escape sequences
-  - Integer literals (positive and negative)
-  - Type signatures and function definitions
-  - Type declarations with type parameters and constructor definitions
-  - Module-qualified names
-  - `case`/`of` keywords and pattern matching
-
-- **Formatting**: Via external `awsum` CLI
-  - Invokes `awsum format <file>`
-  - Preserves EOL style and trailing newline semantics
-  - Configurable binary path
-  - Triggered by the standard `editor.formatOnSave` setting
-
-- **Diagnostics (inline errors and warnings)**: Invokes `awsum check --json`
-  - On open / save / text change (debounced 500ms)
-  - Parses JSON diagnostics, pushes to `DiagnosticCollection`
-  - Reads the optional `severity` field (`"error"` | `"warning"`); maps to `vscode.DiagnosticSeverity` so warnings render yellow per theme
-  - Writes the current buffer (possibly unsaved) to a temp file so checks see the latest content
-
-- **Quick fixes (lightbulb code actions)**: powered by the optional `fixes` array on each diagnostic
-  - Compiler-supplied: extension does no language-aware reasoning, just renders titles + applies `WorkspaceEdit`s straight from the JSON payload
-  - Stored in a `FixesIndex` keyed by `(uri, range)` since `vscode.Diagnostic` has no place to stash structured payloads
-  - Currently the unused-parameter warning ships two fixes: replace with `_` (drop the binding) or rename to `_name` (document as intentionally unused)
-
-- **Document symbols**: Invokes `awsum symbols --json`
-  - Provides Outline panel, breadcrumbs, `Ctrl+Shift+O` / `@` symbol search
-  - Kinds: function / constant / type (enum-like)
-  - Sig + FunDef with the same name merged into one symbol (range spans both, selection range is just the name)
-
-- **Workspace symbols** (`Ctrl+T`): indexes all `.aww` in the workspace
-  - Initial index built on activation via `vscode.workspace.findFiles("**/*.aww", ...)`
-  - Maintained incrementally by `FileSystemWatcher` (create/change/delete) and `onDidSaveTextDocument`
-  - Case-insensitive substring filter; VS Code applies fuzzy ranking on top
-  - Flattens hierarchical children depth-first (ready for future constructor symbols)
+- **Syntax Highlighting** — TextMate grammar.
+- **Format on save** — `textDocument/formatting`. Triggered by the standard `editor.formatOnSave` setting (enabled by default for the `awsum` language via `contributes.configurationDefaults` in `package.json`).
+- **Diagnostics** — `textDocument/publishDiagnostics`. Pushed on open / save / change (debounced 500 ms server-side). Severity (`error` vs `warning`) honoured by the VS Code Problems panel.
+- **Quick Fixes (lightbulb)** — `textDocument/codeAction`. Compiler-supplied fixes only; the extension does no language-aware reasoning.
+- **Document Symbols** — `textDocument/documentSymbol`. Drives the Outline panel, breadcrumbs, and `Ctrl+Shift+O` symbol search.
+- **Workspace Symbols (`Ctrl+T`)** — `workspace/symbol`. The server walks every `.aww` under the workspace folders received at `initialize`.
 
 ## Configuration
 
 ```json
 {
-  "awsum.format.path": "awsum" // Path to `awsum` binary (shared by formatter, check, symbols)
+  "awsum.path": "awsum" // Path to the `awsum` binary; spawned as `awsum lsp` for the LSP server.
 }
 ```
 
-## Extension Architecture
+A change to this setting restarts the LSP client automatically — no editor reload required.
 
-- No Language Server (LSP) — lightweight CLI-based design
-- Six providers: `DocumentFormattingEditProvider`, `DocumentSymbolProvider`, `WorkspaceSymbolProvider`, `DiagnosticCollection` (push-based), `CodeActionProvider` (reads compiler-supplied fixes), plus TextMate grammar for highlighting
-- Temp file approach: CLI expects file paths, extension writes current buffer to a tempdir per invocation
-- Workspace symbol index runs on disk (not unsaved buffers) — refreshed on save + filesystem watcher events
-- Proper cancellation token support on formatting + document symbols
+## Architecture
+
+- **Single source of truth.** `awsum-vscode` does no language-aware processing. All semantics live in `awsum/src/Awsum/Lsp.hs` (the LSP server) and the modules it reuses (`Awsum.Diagnostic`, `Awsum.Symbols`, `Awsum.Format`, `Awsum.ElaborateLower`, …).
+- **Lockstep versioning.** `awsum-vscode A.B.C` ↔ `awsum A.B.C` ↔ `awsum-zed A.B.C`. One version, multiple artefacts. The LSP server lives inside the same `awsum` binary the user installs as the CLI; there is no separate `awsum-lsp` to version-skew against.
+- **No custom providers.** Everything routes through `vscode-languageclient` standard handlers. Anything you'd want to add for VS Code is best added on the LSP server side first — that way `awsum-zed`, Helix, and any other LSP client benefit too.
 
 ## Publishing
 
@@ -79,8 +49,3 @@ dist/extension.js             # Compiled output
 npm run package              # Creates awsum-vscode-A.B.C.vsix
 code --install-extension awsum-vscode-A.B.C.vsix
 ```
-
-## Related Repositories
-
-- Compiler: `awsum` (../awsum)
-- Website: `awsum-lang.org` (../awsum-lang.org)
