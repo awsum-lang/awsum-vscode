@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 `awsum-vscode` is versioned 1:1 with the `awsum` compiler — the extension's `A.B.C` is exactly the `awsum` `A.B.C` it targets. Visual Studio Marketplace doesn't accept the kind of semver pre-release suffix we'd need to iterate the extension independently under a fixed compiler version, so we collapse the two version axes into one: every `awsum` release ships a matching extension release, the extension is never released ahead of the compiler, and only the latest `awsum` release is supported. (Releases before 0.0.3 used an `A.B.C-N` scheme; the entries below preserve those original tags.)
 
+Until `awsum 1.0.0`, the project does not follow SemVer — every release increments only the patch (`0.0.1 → 0.0.2 …`), and any release may break. The 1:1 lockstep above is the contract that does hold: within a single `0.0.x`, the extension and the `awsum` it ships against are mutually compatible.
+
 ## [Unreleased]
+
+## [0.0.4] - 2026-05-13
 
 ### Changed
 

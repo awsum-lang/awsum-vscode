@@ -3,10 +3,10 @@
   "displayName": "Awsum",
   "description": "Awsum language support for Visual Studio Code",
   "publisher": "awsum-lang",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "engines": {
     "node": ">=24.14",
-    "vscode": "^1.115.0"
+    "vscode": "^1.118.0"
   },
   "repository": {
     "type": "git",
@@ -79,10 +79,10 @@
     "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
-    "@types/node": "^24.12.2",
-    "@types/vscode": "^1.115.0",
-    "@vscode/vsce": "^3.7.1",
-    "esbuild": "^0.25.12",
-    "typescript": "^5.9.3"
+    "@types/node": "^24.12.4",
+    "@types/vscode": "^1.118.0",
+    "@vscode/vsce": "^3.9.1",
+    "esbuild": "^0.28.0",
+    "typescript": "^6.0.3"
   }
 }
