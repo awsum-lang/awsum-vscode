@@ -58,7 +58,14 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "awsum-lang.awsum-vscode"
       }
-    }
+    },
+    "commands": [
+      {
+        "command": "awsum.restartLspServer",
+        "title": "Restart Awsum LSP server",
+        "category": "Awsum"
+      }
+    ]
   },
   "files": [
     "dist",

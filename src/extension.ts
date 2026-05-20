@@ -92,6 +92,17 @@ export async function activate(context: vscode.ExtensionContext) {
     }),
   );
 
+  // User-facing "Awsum: Restart Awsum LSP server" command. Useful after a
+  // local `stack install` of a new `awsum` build, or any time the server's
+  // in-memory state needs a clean slate.
+  context.subscriptions.push(
+    vscode.commands.registerCommand("awsum.restartLspServer", async () => {
+      if (!client) return;
+      await client.restart();
+      vscode.window.showInformationMessage("Awsum LSP server restarted.");
+    }),
+  );
+
   await safeStart(client, bin);
 }
 

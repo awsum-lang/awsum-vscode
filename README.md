@@ -18,6 +18,14 @@ VS Code extension for the [Awsum](https://awsum-lang.org) programming language (
 
 If `awsum` is not on your `PATH`, point the extension at the binary via Settings → `awsum.path` (e.g. `/usr/local/bin/awsum`). A change to this setting restarts the LSP client automatically — no editor reload needed.
 
+## Commands
+
+| Command                                | Default keybinding | What it does                                                                     |
+| -------------------------------------- | ------------------ | -------------------------------------------------------------------------------- |
+| `Awsum: Restart Awsum LSP server`      | —                  | Stops the `awsum lsp` process and starts a new one with the same settings. Useful after a local `stack install` of a new `awsum` build, or to clear any in-memory state on the server. |
+
+Bind it to a keybinding via the standard VS Code Keyboard Shortcuts editor (`awsum.restartLspServer`).
+
 ## Versioning
 
 `awsum-vscode A.B.C` is built and tested against `awsum A.B.C`. Mismatched versions are not supported — at startup the LSP server compares the extension's expected version against its own and shows a non-blocking notification on mismatch.
