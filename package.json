@@ -74,7 +74,8 @@
     "icons",
     "README.md",
     "CHANGELOG.md",
-    "LICENSE"
+    "LICENSE",
+    "NOTICE"
   ],
   "scripts": {
     "vscode:prepublish": "npm run bundle",
