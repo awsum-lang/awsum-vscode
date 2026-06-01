@@ -3,7 +3,7 @@
   "displayName": "Awsum",
   "description": "Awsum language support for Visual Studio Code",
   "publisher": "awsum-lang",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "node": ">=24.14",
     "vscode": "^1.118.0"
@@ -71,7 +71,9 @@
     "dist",
     "syntaxes",
     "language-configuration.json",
-    "icons",
+    "icons/awsum.svg",
+    "icons/awsum-light.svg",
+    "icons/extension-icon.jpg",
     "README.md",
     "CHANGELOG.md",
     "LICENSE",
