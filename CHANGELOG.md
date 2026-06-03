@@ -10,6 +10,10 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+## [0.0.6] - 2026-06-03
+
+No user-facing changes to the extension itself; this release tracks the compiler version bump. The TextMate grammar is unchanged — every 0.0.6 language change is in the compiler and surfaces through `awsum lsp`.
+
 ## [0.0.5] - 2026-05-31
 
 ### Added
