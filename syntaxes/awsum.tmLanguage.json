@@ -64,7 +64,7 @@
 
     "import": {
       "name": "meta.import.awsum",
-      "begin": "^(import)\\b",
+      "begin": "^(import)(?![\\w'])",
       "beginCaptures": {
         "1": { "name": "keyword.control.import.awsum" }
       },
@@ -79,7 +79,7 @@
       "patterns": [
         {
           "name": "entity.name.namespace.awsum",
-          "match": "\\b[A-Z][\\w']*\\b"
+          "match": "(?<![\\w'])[A-Z][\\w']*(?![\\w'])"
         },
         {
           "name": "punctuation.accessor.dot.awsum",
@@ -90,7 +90,7 @@
 
     "type_declaration": {
       "name": "meta.type-declaration.awsum",
-      "begin": "^(?:(empty)\\s+)?(type)\\b",
+      "begin": "^(?:(empty)\\s+)?(type)(?![\\w'])",
       "beginCaptures": {
         "1": { "name": "keyword.other.type-definition.empty.awsum" },
         "2": { "name": "keyword.other.type-definition.awsum" }
@@ -100,8 +100,8 @@
         { "name": "keyword.operator.assignment.awsum", "match": "=" },
         { "name": "keyword.operator.pipe-forward.awsum", "match": "\\|>" },
         { "name": "keyword.operator.pipe.awsum", "match": "\\|" },
-        { "name": "entity.name.type.awsum", "match": "\\b_?[A-Z][\\w']*\\b" },
-        { "name": "variable.type.awsum", "match": "\\b[a-z_][\\w']*\\b" },
+        { "name": "entity.name.type.awsum", "match": "(?<![\\w'])_?[A-Z][\\w']*(?![\\w'])" },
+        { "name": "variable.type.awsum", "match": "(?<![\\w'])[a-z_][\\w']*(?![\\w'])" },
         { "include": "#line_comment" }
       ]
     },
@@ -126,11 +126,11 @@
         },
         {
           "name": "support.type.awsum",
-          "match": "\\b(?:_?[A-Z][\\w']*)(?:\\.(?:_?[A-Z][\\w']*))*\\b"
+          "match": "(?<![\\w'])(?:_?[A-Z][\\w']*)(?:\\.(?:_?[A-Z][\\w']*))*(?![\\w'])"
         },
         {
           "name": "variable.type.awsum",
-          "match": "\\b[a-z_][\\w']*\\b"
+          "match": "(?<![\\w'])[a-z_][\\w']*(?![\\w'])"
         },
         { "include": "#parens" }
       ]
@@ -138,7 +138,7 @@
 
     "function_definition": {
       "name": "meta.function.definition.awsum",
-      "begin": "^(?:([a-z_][\\w']*)\\b|(\\(\\+\\+\\)))(?!\\s*:)",
+      "begin": "^(?:([a-z_][\\w']*)(?![\\w'])|(\\(\\+\\+\\)))(?!\\s*:)",
       "beginCaptures": {
         "1": { "name": "entity.name.function.awsum" },
         "2": { "name": "entity.name.function.awsum" }
@@ -150,14 +150,14 @@
       "patterns": [
         {
           "name": "variable.parameter.function.awsum",
-          "match": "\\b[a-z_][\\w']*\\b"
+          "match": "(?<![\\w'])[a-z_][\\w']*(?![\\w'])"
         }
       ]
     },
 
     "qualified_value": {
       "name": "meta.qualified.value.awsum",
-      "match": "\\b(?:[A-Z][\\w']*\\.)+([a-z][\\w']*)\\b",
+      "match": "(?<![\\w'])(?:[A-Z][\\w']*\\.)+([a-z][\\w']*)(?![\\w'])",
       "captures": {
         "1": { "name": "support.function.awsum" }
       }
@@ -165,7 +165,7 @@
 
     "let_binding_ascription": {
       "comment": "Highlights the `:` in `let n : T = …` (and the let keyword in the same hit) so the ascription separator gets the same scope as the one in top-level signatures. The type itself isn't entered as a region — the trailing `T = …` is handled by ordinary identifier / operator rules. Matches the standalone `let-in` form; subsequent bindings in the multi-binding layout (no leading `let`) keep the plain identifier coloring.",
-      "match": "\\b(let)\\s+([a-z_][\\w']*)\\s*(:)",
+      "match": "(?<![\\w'])(let)\\s+([a-z_][\\w']*)\\s*(:)",
       "captures": {
         "1": { "name": "keyword.control.let.awsum" },
         "3": { "name": "punctuation.separator.type.annotation.awsum" }
@@ -176,19 +176,19 @@
       "patterns": [
         {
           "name": "keyword.control.case.awsum",
-          "match": "\\bcase\\b"
+          "match": "(?<![\\w'])case(?![\\w'])"
         },
         {
           "name": "keyword.control.of.awsum",
-          "match": "\\bof\\b"
+          "match": "(?<![\\w'])of(?![\\w'])"
         },
         {
           "name": "keyword.control.do.awsum",
-          "match": "\\bdo\\b"
+          "match": "(?<![\\w'])do(?![\\w'])"
         },
         {
           "name": "keyword.control.let.awsum",
-          "match": "\\b(?:let|in)\\b"
+          "match": "(?<![\\w'])(?:let|in)(?![\\w'])"
         }
       ]
     },
@@ -246,11 +246,11 @@
       "patterns": [
         {
           "name": "entity.name.type.awsum",
-          "match": "\\b_?[A-Z][\\w']*\\b"
+          "match": "(?<![\\w'])_?[A-Z][\\w']*(?![\\w'])"
         },
         {
           "name": "variable.other.readwrite.awsum",
-          "match": "\\b[a-z_][\\w']*\\b"
+          "match": "(?<![\\w'])[a-z_][\\w']*(?![\\w'])"
         }
       ]
     }

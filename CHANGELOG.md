@@ -10,6 +10,12 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+## [0.0.7] - 2026-06-22
+
+### Fixed
+
+- Syntax highlighting no longer mis-tokenises an identifier containing an apostrophe (`'`): a name like `in'` was highlighted as the `in` keyword because the grammar's word boundaries didn't count `'` as part of an identifier. They now do.
+
 ## [0.0.6] - 2026-06-03
 
 No user-facing changes to the extension itself; this release tracks the compiler version bump. The TextMate grammar is unchanged — every 0.0.6 language change is in the compiler and surfaces through `awsum lsp`.

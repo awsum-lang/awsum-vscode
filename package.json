@@ -3,7 +3,7 @@
   "displayName": "Awsum",
   "description": "Awsum language support for Visual Studio Code",
   "publisher": "awsum-lang",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "engines": {
     "node": ">=24.14",
     "vscode": "^1.118.0"
@@ -86,13 +86,13 @@
     "package": "npm run bundle && vsce package"
   },
   "dependencies": {
-    "vscode-languageclient": "^9.0.1"
+    "vscode-languageclient": "^10.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.12.4",
+    "@types/node": "^24.13.2",
     "@types/vscode": "^1.118.0",
-    "@vscode/vsce": "^3.9.1",
-    "esbuild": "^0.28.0",
+    "@vscode/vsce": "^3.9.2",
+    "esbuild": "^0.28.1",
     "typescript": "^6.0.3",
     "vscode-oniguruma": "^2.0.1",
     "vscode-textmate": "^9.3.2"
