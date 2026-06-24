@@ -64,7 +64,7 @@
 
     "import": {
       "name": "meta.import.awsum",
-      "begin": "^(import)(?![\\w'])",
+      "begin": "^(import)(?![A-Za-z0-9_'])",
       "beginCaptures": {
         "1": { "name": "keyword.control.import.awsum" }
       },
@@ -79,7 +79,7 @@
       "patterns": [
         {
           "name": "entity.name.namespace.awsum",
-          "match": "(?<![\\w'])[A-Z][\\w']*(?![\\w'])"
+          "match": "(?<![A-Za-z0-9_'])[A-Z][A-Za-z0-9_']*(?![A-Za-z0-9_'])"
         },
         {
           "name": "punctuation.accessor.dot.awsum",
@@ -90,7 +90,7 @@
 
     "type_declaration": {
       "name": "meta.type-declaration.awsum",
-      "begin": "^(?:(empty)\\s+)?(type)(?![\\w'])",
+      "begin": "^(?:(empty)\\s+)?(type)(?![A-Za-z0-9_'])",
       "beginCaptures": {
         "1": { "name": "keyword.other.type-definition.empty.awsum" },
         "2": { "name": "keyword.other.type-definition.awsum" }
@@ -100,15 +100,15 @@
         { "name": "keyword.operator.assignment.awsum", "match": "=" },
         { "name": "keyword.operator.pipe-forward.awsum", "match": "\\|>" },
         { "name": "keyword.operator.pipe.awsum", "match": "\\|" },
-        { "name": "entity.name.type.awsum", "match": "(?<![\\w'])_?[A-Z][\\w']*(?![\\w'])" },
-        { "name": "variable.type.awsum", "match": "(?<![\\w'])[a-z_][\\w']*(?![\\w'])" },
+        { "name": "entity.name.type.awsum", "match": "(?<![A-Za-z0-9_'])_?[A-Z][A-Za-z0-9_']*(?![A-Za-z0-9_'])" },
+        { "name": "variable.type.awsum", "match": "(?<![A-Za-z0-9_'])[a-z_][A-Za-z0-9_']*(?![A-Za-z0-9_'])" },
         { "include": "#line_comment" }
       ]
     },
 
     "type_signature": {
       "name": "meta.type-signature.awsum",
-      "begin": "^(?:([a-z_][\\w']*)|(\\(\\+\\+\\)))\\s*(:)\\s*",
+      "begin": "^(?:([a-z_][A-Za-z0-9_']*)|(\\(\\+\\+\\)))\\s*(:)\\s*",
       "beginCaptures": {
         "1": { "name": "entity.name.function.awsum" },
         "2": { "name": "entity.name.function.awsum" },
@@ -126,11 +126,11 @@
         },
         {
           "name": "support.type.awsum",
-          "match": "(?<![\\w'])(?:_?[A-Z][\\w']*)(?:\\.(?:_?[A-Z][\\w']*))*(?![\\w'])"
+          "match": "(?<![A-Za-z0-9_'])(?:_?[A-Z][A-Za-z0-9_']*)(?:\\.(?:_?[A-Z][A-Za-z0-9_']*))*(?![A-Za-z0-9_'])"
         },
         {
           "name": "variable.type.awsum",
-          "match": "(?<![\\w'])[a-z_][\\w']*(?![\\w'])"
+          "match": "(?<![A-Za-z0-9_'])[a-z_][A-Za-z0-9_']*(?![A-Za-z0-9_'])"
         },
         { "include": "#parens" }
       ]
@@ -138,7 +138,7 @@
 
     "function_definition": {
       "name": "meta.function.definition.awsum",
-      "begin": "^(?:([a-z_][\\w']*)(?![\\w'])|(\\(\\+\\+\\)))(?!\\s*:)",
+      "begin": "^(?:([a-z_][A-Za-z0-9_']*)(?![A-Za-z0-9_'])|(\\(\\+\\+\\)))(?!\\s*:)",
       "beginCaptures": {
         "1": { "name": "entity.name.function.awsum" },
         "2": { "name": "entity.name.function.awsum" }
@@ -150,14 +150,14 @@
       "patterns": [
         {
           "name": "variable.parameter.function.awsum",
-          "match": "(?<![\\w'])[a-z_][\\w']*(?![\\w'])"
+          "match": "(?<![A-Za-z0-9_'])[a-z_][A-Za-z0-9_']*(?![A-Za-z0-9_'])"
         }
       ]
     },
 
     "qualified_value": {
       "name": "meta.qualified.value.awsum",
-      "match": "(?<![\\w'])(?:[A-Z][\\w']*\\.)+([a-z][\\w']*)(?![\\w'])",
+      "match": "(?<![A-Za-z0-9_'])(?:[A-Z][A-Za-z0-9_']*\\.)+([a-z][A-Za-z0-9_']*)(?![A-Za-z0-9_'])",
       "captures": {
         "1": { "name": "support.function.awsum" }
       }
@@ -165,7 +165,7 @@
 
     "let_binding_ascription": {
       "comment": "Highlights the `:` in `let n : T = …` (and the let keyword in the same hit) so the ascription separator gets the same scope as the one in top-level signatures. The type itself isn't entered as a region — the trailing `T = …` is handled by ordinary identifier / operator rules. Matches the standalone `let-in` form; subsequent bindings in the multi-binding layout (no leading `let`) keep the plain identifier coloring.",
-      "match": "(?<![\\w'])(let)\\s+([a-z_][\\w']*)\\s*(:)",
+      "match": "(?<![A-Za-z0-9_'])(let)\\s+([a-z_][A-Za-z0-9_']*)\\s*(:)",
       "captures": {
         "1": { "name": "keyword.control.let.awsum" },
         "3": { "name": "punctuation.separator.type.annotation.awsum" }
@@ -176,26 +176,26 @@
       "patterns": [
         {
           "name": "keyword.control.case.awsum",
-          "match": "(?<![\\w'])case(?![\\w'])"
+          "match": "(?<![A-Za-z0-9_'])case(?![A-Za-z0-9_'])"
         },
         {
           "name": "keyword.control.of.awsum",
-          "match": "(?<![\\w'])of(?![\\w'])"
+          "match": "(?<![A-Za-z0-9_'])of(?![A-Za-z0-9_'])"
         },
         {
           "name": "keyword.control.do.awsum",
-          "match": "(?<![\\w'])do(?![\\w'])"
+          "match": "(?<![A-Za-z0-9_'])do(?![A-Za-z0-9_'])"
         },
         {
           "name": "keyword.control.let.awsum",
-          "match": "(?<![\\w'])(?:let|in)(?![\\w'])"
+          "match": "(?<![A-Za-z0-9_'])(?:let|in)(?![A-Za-z0-9_'])"
         }
       ]
     },
 
     "numeric_literal": {
       "name": "constant.numeric.integer.awsum",
-      "match": "(?<![\\w'])-?\\d+(?:_\\d+)*(?![\\w'])"
+      "match": "(?<![A-Za-z0-9_'])-?\\d+(?:_\\d+)*(?![A-Za-z0-9_'])"
     },
 
     "operators": {
@@ -246,11 +246,11 @@
       "patterns": [
         {
           "name": "entity.name.type.awsum",
-          "match": "(?<![\\w'])_?[A-Z][\\w']*(?![\\w'])"
+          "match": "(?<![A-Za-z0-9_'])_?[A-Z][A-Za-z0-9_']*(?![A-Za-z0-9_'])"
         },
         {
           "name": "variable.other.readwrite.awsum",
-          "match": "(?<![\\w'])[a-z_][\\w']*(?![\\w'])"
+          "match": "(?<![A-Za-z0-9_'])[a-z_][A-Za-z0-9_']*(?![A-Za-z0-9_'])"
         }
       ]
     }
