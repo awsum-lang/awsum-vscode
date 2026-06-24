@@ -10,6 +10,10 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+### Fixed
+
+- Syntax highlighting no longer extends an identifier across a non-ASCII letter — the grammar's identifier patterns are now ASCII `[A-Za-z0-9_']`, matching the compiler, which rejects non-ASCII identifiers. Previously the TextMate `\w` matched Unicode, so a name like `funcλ` was highlighted as one valid identifier.
+
 ## [0.0.7] - 2026-06-22
 
 ### Fixed
