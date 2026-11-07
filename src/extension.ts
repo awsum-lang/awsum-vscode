@@ -1,7 +1,7 @@
 /**
  * `awsum-vscode` — thin LSP client to `awsum lsp`.
  *
- * Every editor feature — diagnostics, code actions, formatting,
+ * Every editor feature — diagnostics, code actions, formatting, hover,
  * document symbols, workspace symbols — is delivered by the `awsum lsp`
  * server (a subcommand of the `awsum` compiler binary). This file is
  * the minimum shim VS Code needs: locate the binary, spawn it, hand

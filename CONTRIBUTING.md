@@ -12,7 +12,7 @@ npm run compile     # Compile TypeScript
 npm run package     # Build the .vsix
 ```
 
-The extension shells out to the `awsum` CLI for formatting, diagnostics, and document symbols — install it from the [compiler repo](https://github.com/awsum-lang/awsum) before testing changes that touch those features.
+Every editor feature (diagnostics, formatting, code actions, hover, document and workspace symbols) comes from the `awsum lsp` server inside the compiler binary — install it from the [compiler repo](https://github.com/awsum-lang/awsum) before testing changes that touch those features.
 
 ## Developer Certificate of Origin
 

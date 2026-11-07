@@ -1,6 +1,6 @@
 # Awsum language support for Visual Studio Code
 
-VS Code extension for the [Awsum](https://awsum-lang.org) programming language (`.aww` files). A thin LSP client to the `awsum lsp` server bundled with the Awsum compiler — every diagnostic, code action, format edit, document symbol, and workspace symbol is computed inside the `awsum` compiler binary and pushed over LSP.
+VS Code extension for the [Awsum](https://awsum-lang.org) programming language (`.aww` files). A thin LSP client to the `awsum lsp` server bundled with the Awsum compiler — every diagnostic, code action, format edit, hover, document symbol, and workspace symbol is computed inside the `awsum` compiler binary and pushed over LSP.
 
 ## Features
 
@@ -8,6 +8,7 @@ VS Code extension for the [Awsum](https://awsum-lang.org) programming language (
 - **Format on save** — `textDocument/formatting`, triggered by the standard `editor.formatOnSave` setting (enabled by default for the `awsum` language via `contributes.configurationDefaults` in `package.json`).
 - **Inline diagnostics** — `textDocument/publishDiagnostics`, pushed on open / save / change (debounced 500 ms server-side). `error` vs `warning` severity honoured by the VS Code Problems panel.
 - **Quick fixes (lightbulb)** — `textDocument/codeAction`. Compiler-supplied fixes only; the extension does no language-aware reasoning.
+- **Hover** — `textDocument/hover`. The type of the name under the cursor (for a polymorphic reference, also its type at that call site) and its doc comment, for user and prelude names alike.
 - **Document outline** — `textDocument/documentSymbol`. Drives the Outline panel, breadcrumbs, and `Ctrl+Shift+O` symbol search.
 - **Workspace symbol search (`Ctrl+T`)** — `workspace/symbol`. The server walks every `.aww` under the workspace folders received at `initialize`.
 
@@ -53,7 +54,7 @@ dist/extension.js               # Bundled output (esbuild)
 ### Architecture
 
 - **Single source of truth.** `awsum-vscode` does no language-aware processing. All semantics live in `awsum/src/Awsum/Lsp.hs` (the LSP server) and the modules it reuses (`Awsum.Diagnostic`, `Awsum.Symbols`, `Awsum.Format`, `Awsum.ElaborateLower`, …).
-- **No custom providers.** Everything routes through `vscode-languageclient` standard handlers. Anything you'd want to add for VS Code is best added on the LSP server side first — that way `awsum-zed`, Helix, and any other LSP client benefit too.
+- **No custom providers.** Everything routes through `vscode-languageclient` standard handlers. Anything you'd want to add for VS Code is best added on the LSP server side first — that way every other LSP client benefits too.
 
 ## Related
 

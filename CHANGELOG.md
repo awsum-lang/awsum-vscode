@@ -10,9 +10,18 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+## [0.0.8] - 2026-11-07
+
+### Changed
+
+- Build toolchain on Node.js 26 (CI and `engines.node`; previously 24.14), `actions/setup-node` v6 → v7.
+- Dependencies: `vscode-languageclient` 10 → 11, `@vscode/vsce` 3 → 4, TypeScript 6 → 7, `@types/node` 24 → 26, `esbuild` 0.28.1 → 0.28.2.
+- The README lists hover (type and doc comment of the name under the cursor). `awsum lsp` has served it since 0.0.5; only the documentation was missing it.
+
 ### Fixed
 
 - Syntax highlighting no longer extends an identifier across a non-ASCII letter — the grammar's identifier patterns are now ASCII `[A-Za-z0-9_']`, matching the compiler, which rejects non-ASCII identifiers. Previously the TextMate `\w` matched Unicode, so a name like `funcλ` was highlighted as one valid identifier.
+- Block comments are now highlighted in `import` lines, type signatures, `type` declarations, and function parameters. In those positions the grammar didn't recognise `{- … -}` at all, so in `pick : Pick {- note -} -> Int32` the comment's words were coloured as types.
 
 ## [0.0.7] - 2026-06-22
 

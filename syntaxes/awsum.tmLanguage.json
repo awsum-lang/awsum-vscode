@@ -70,6 +70,7 @@
       },
       "end": "$",
       "patterns": [
+        { "include": "#block_comment" },
         { "include": "#module_path" },
         { "include": "#line_comment" }
       ]
@@ -97,6 +98,7 @@
       },
       "end": "$",
       "patterns": [
+        { "include": "#block_comment" },
         { "name": "keyword.operator.assignment.awsum", "match": "=" },
         { "name": "keyword.operator.pipe-forward.awsum", "match": "\\|>" },
         { "name": "keyword.operator.pipe.awsum", "match": "\\|" },
@@ -115,7 +117,7 @@
         "3": { "name": "punctuation.separator.type.annotation.awsum" }
       },
       "end": "(?=\\s*(?:$|--))",
-      "patterns": [{ "include": "#type_expr" }]
+      "patterns": [{ "include": "#block_comment" }, { "include": "#type_expr" }]
     },
 
     "type_expr": {
@@ -148,6 +150,7 @@
         "1": { "name": "keyword.operator.assignment.awsum" }
       },
       "patterns": [
+        { "include": "#block_comment" },
         {
           "name": "variable.parameter.function.awsum",
           "match": "(?<![A-Za-z0-9_'])[a-z_][A-Za-z0-9_']*(?![A-Za-z0-9_'])"
