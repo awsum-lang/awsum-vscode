@@ -14,7 +14,10 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ### Changed
 
-- Build toolchain on Node.js 26 (CI and `engines.node`; previously 24.14), `actions/setup-node` v6 → v7.
+- **Requires VS Code 1.125 or newer** (previously 1.118): the newest version that Cursor, Windsurf and VSCodium all run and that has a published `@types/vscode`, which moves to 1.125 with it. `just check-forks` computes it from the forks' public release data.
+- Build toolchain on Node.js 26 (CI and `engines.node`; previously 24.14).
+- Dependencies install only releases at least 7 days old (`min-release-age=7` in `.npmrc`); the regenerated lockfile holds back 13 transitive packages that were newer.
+- CI: every GitHub Action pinned to the commit SHA of a release at least 7 days old (`actions/setup-node` v6 → v7), and Node.js to exactly 26.13.0.
 - Dependencies: `vscode-languageclient` 10 → 11, `@vscode/vsce` 3 → 4, TypeScript 6 → 7, `@types/node` 24 → 26, `esbuild` 0.28.1 → 0.28.2.
 - The README lists hover (type and doc comment of the name under the cursor). `awsum lsp` has served it since 0.0.5; only the documentation was missing it.
 

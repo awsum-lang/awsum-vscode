@@ -33,6 +33,8 @@ Bind it to a keybinding via the standard VS Code Keyboard Shortcuts editor (`aws
 
 Visual Studio Marketplace only accepts plain semver `A.B.C` (no 4th segment, no pre-release tags), so we can't iterate the extension independently under a fixed compiler version. Every `awsum` release ships a matching extension release (minimum once); the extension is never released ahead of the compiler. Only the latest `awsum` release is supported.
 
+Supported editor versions follow Awsum's [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest VS Code version that Cursor, Windsurf and VSCodium all run (`just check-forks` computes it).
+
 ## Development
 
 ```bash
@@ -66,7 +68,7 @@ dist/extension.js               # Bundled output (esbuild)
 
 ## AI use
 
-This VSCode extension is developed with substantial usage of generative AI. Every generated change is reviewed, edited, and accepted by a human before it lands in the repository, and no output is shipped unedited.
+This VSCode extension is developed with substantial usage of generative AI.
 
 ## License
 

@@ -28,6 +28,10 @@ uninstall-local:
   code --uninstall-extension awsum-lang.awsum-vscode
   echo "✅ Uninstalled awsum-lang.awsum-vscode from VS Code"
 
+# Compute the minimum VS Code version (the lowest base among Cursor, Windsurf and VSCodium, stepped back to a version with @types/vscode past the cooldown) and check package.json against it
+check-forks:
+  node scripts/check-forks.mjs
+
 # Confirm potentially dangerous actions with a specific confirmation input (e.g. version, environment name)
 [private]
 manual-confirmation-input message required_confirmation:
