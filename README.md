@@ -1,6 +1,6 @@
 # Awsum language support for Visual Studio Code
 
-VS Code extension for the [Awsum](https://awsum-lang.org) programming language (`.aww` files). A thin LSP client to the `awsum lsp` server bundled with the Awsum compiler — every diagnostic, code action, format edit, document symbol, and workspace symbol is computed inside the `awsum` compiler binary and pushed over LSP.
+VS Code extension for the [Awsum](https://awsum-lang.org) programming language (`.aww` files). A thin LSP client to the `awsum lsp` server bundled with the Awsum compiler — every diagnostic, code action, format edit, hover, document symbol, and workspace symbol is computed inside the `awsum` compiler binary and pushed over LSP.
 
 ## Features
 
@@ -8,6 +8,7 @@ VS Code extension for the [Awsum](https://awsum-lang.org) programming language (
 - **Format on save** — `textDocument/formatting`, triggered by the standard `editor.formatOnSave` setting (enabled by default for the `awsum` language via `contributes.configurationDefaults` in `package.json`).
 - **Inline diagnostics** — `textDocument/publishDiagnostics`, pushed on open / save / change (debounced 500 ms server-side). `error` vs `warning` severity honoured by the VS Code Problems panel.
 - **Quick fixes (lightbulb)** — `textDocument/codeAction`. Compiler-supplied fixes only; the extension does no language-aware reasoning.
+- **Hover** — `textDocument/hover`. The type of the name under the cursor (for a polymorphic reference, also its type at that call site) and its doc comment, for user and prelude names alike.
 - **Document outline** — `textDocument/documentSymbol`. Drives the Outline panel, breadcrumbs, and `Ctrl+Shift+O` symbol search.
 - **Workspace symbol search (`Ctrl+T`)** — `workspace/symbol`. The server walks every `.aww` under the workspace folders received at `initialize`.
 
@@ -32,6 +33,8 @@ Bind it to a keybinding via the standard VS Code Keyboard Shortcuts editor (`aws
 
 Visual Studio Marketplace only accepts plain semver `A.B.C` (no 4th segment, no pre-release tags), so we can't iterate the extension independently under a fixed compiler version. Every `awsum` release ships a matching extension release (minimum once); the extension is never released ahead of the compiler. Only the latest `awsum` release is supported.
 
+Supported editor versions follow Awsum's [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest VS Code version that Cursor, Windsurf and VSCodium all run (`just check-forks` computes it).
+
 ## Development
 
 ```bash
@@ -53,7 +56,7 @@ dist/extension.js               # Bundled output (esbuild)
 ### Architecture
 
 - **Single source of truth.** `awsum-vscode` does no language-aware processing. All semantics live in `awsum/src/Awsum/Lsp.hs` (the LSP server) and the modules it reuses (`Awsum.Diagnostic`, `Awsum.Symbols`, `Awsum.Format`, `Awsum.ElaborateLower`, …).
-- **No custom providers.** Everything routes through `vscode-languageclient` standard handlers. Anything you'd want to add for VS Code is best added on the LSP server side first — that way `awsum-zed`, Helix, and any other LSP client benefit too.
+- **No custom providers.** Everything routes through `vscode-languageclient` standard handlers. Anything you'd want to add for VS Code is best added on the LSP server side first — that way every other LSP client benefits too.
 
 ## Related
 
@@ -65,7 +68,7 @@ dist/extension.js               # Bundled output (esbuild)
 
 ## AI use
 
-This VSCode extension is developed with substantial usage of generative AI. Every generated change is reviewed, edited, and accepted by a human before it lands in the repository, and no output is shipped unedited.
+This VSCode extension is developed with substantial usage of generative AI.
 
 ## License
 
