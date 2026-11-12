@@ -10,6 +10,10 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+### Fixed
+
+- Extension icon resized to 1024×1024 (from 1080×1080): the Visual Studio Marketplace rejects anything larger.
+
 ## [0.0.8] - 2026-11-07
 
 ### Changed
