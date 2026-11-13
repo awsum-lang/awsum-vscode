@@ -33,7 +33,7 @@ Bind it to a keybinding via the standard VS Code Keyboard Shortcuts editor (`aws
 
 Visual Studio Marketplace only accepts plain semver `A.B.C` (no 4th segment, no pre-release tags), so we can't iterate the extension independently under a fixed compiler version. Every `awsum` release ships a matching extension release (minimum once); the extension is never released ahead of the compiler. Only the latest `awsum` release is supported.
 
-Supported editor versions follow Awsum's [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest VS Code version that Cursor, Windsurf and VSCodium all run (`just check-forks` computes it).
+Supported editor versions follow the Awsum [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest VS Code version that Cursor, Windsurf and VSCodium all run (`just check-forks` computes it).
 
 ## Development
 
