@@ -32,6 +32,14 @@ uninstall-local:
 check-forks:
   node scripts/check-forks.mjs
 
+# Check the grammars of the layers against the sibling `awsum` checkout: the copies in syntaxes/, the choice by the first line, and every program of a layer that is not a syntax error (`npm install` first)
+check-grammars *FILES:
+  node scripts/check-grammars.mjs {{ FILES }}
+
+# List the scopes the default color themes of VS Code color, at the version in engines.vscode, and check the grammars of the layers against them (downloads the theme sources)
+theme-scopes:
+  node scripts/theme-scopes.mjs
+
 # Confirm potentially dangerous actions with a specific confirmation input (e.g. version, environment name)
 [private]
 manual-confirmation-input message required_confirmation:

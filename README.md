@@ -4,7 +4,7 @@ VS Code extension for the [Awsum](https://awsum-lang.org) programming language (
 
 ## Features
 
-- **Syntax highlighting** — TextMate grammar for `.aww` files.
+- **Syntax highlighting** — TextMate grammars for `.aww` and `.awsum` files.
 - **Format on save** — `textDocument/formatting`, triggered by the standard `editor.formatOnSave` setting (enabled by default for the `awsum` language via `contributes.configurationDefaults` in `package.json`).
 - **Inline diagnostics** — `textDocument/publishDiagnostics`, pushed on open / save / change (debounced 500 ms server-side). `error` vs `warning` severity honoured by the VS Code Problems panel.
 - **Quick fixes (lightbulb)** — `textDocument/codeAction`. Compiler-supplied fixes only; the extension does no language-aware reasoning.
@@ -47,10 +47,17 @@ npm run package     # bundle + vsce package → awsum-vscode-A.B.C.vsix
 ### Structure
 
 ```
-src/extension.ts                # LSP client (vscode-languageclient → awsum lsp)
-syntaxes/awsum.tmLanguage.json  # TextMate grammar
-language-configuration.json     # Comment / bracket / auto-close config
-dist/extension.js               # Bundled output (esbuild)
+src/extension.ts                        # LSP client (vscode-languageclient → awsum lsp), for `.aww` files
+syntaxes/awsum.tmLanguage.json          # `.awsum`: picks the grammar of a layer by the first line
+syntaxes/awsum-layer0.tmLanguage.json   # copy of awsum/layer0/awsum.tmLanguage.json
+syntaxes/awsum-haskell.tmLanguage.json  # `.aww`: the grammar of the Haskell implementation
+language-configuration.json             # `.awsum`: comments, brackets, auto-close
+language-configuration-haskell.json     # `.aww`: the same
+scripts/check-grammars.mjs              # `just check-grammars`: the grammars of the layers against ../awsum
+scripts/theme-scopes.mjs                # `just theme-scopes`: the grammars of the layers against the default themes
+scripts/tokenize.mjs                    # tokenizes a `.aww` file for the tests of the Haskell implementation
+scripts/check-forks.mjs                 # `just check-forks`: the minimum VS Code version
+dist/extension.js                       # Bundled output (esbuild)
 ```
 
 ### Architecture

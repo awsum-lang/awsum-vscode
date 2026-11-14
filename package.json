@@ -27,9 +27,23 @@
           "Awsum"
         ],
         "extensions": [
-          ".aww"
+          ".awsum"
         ],
         "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/awsum-light.svg",
+          "dark": "./icons/awsum.svg"
+        }
+      },
+      {
+        "id": "awsum-haskell",
+        "aliases": [
+          "Awsum (.aww)"
+        ],
+        "extensions": [
+          ".aww"
+        ],
+        "configuration": "./language-configuration-haskell.json",
         "icon": {
           "light": "./icons/awsum-light.svg",
           "dark": "./icons/awsum.svg"
@@ -41,6 +55,15 @@
         "language": "awsum",
         "scopeName": "source.awsum",
         "path": "./syntaxes/awsum.tmLanguage.json"
+      },
+      {
+        "scopeName": "source.awsum.layer0",
+        "path": "./syntaxes/awsum-layer0.tmLanguage.json"
+      },
+      {
+        "language": "awsum-haskell",
+        "scopeName": "source.awsum-haskell",
+        "path": "./syntaxes/awsum-haskell.tmLanguage.json"
       }
     ],
     "configuration": {
@@ -54,7 +77,7 @@
       }
     },
     "configurationDefaults": {
-      "[awsum]": {
+      "[awsum-haskell]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "awsum-lang.awsum-vscode"
       }
@@ -71,6 +94,7 @@
     "dist",
     "syntaxes",
     "language-configuration.json",
+    "language-configuration-haskell.json",
     "icons/awsum.svg",
     "icons/awsum-light.svg",
     "icons/extension-icon.jpg",

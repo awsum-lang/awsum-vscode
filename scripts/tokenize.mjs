@@ -5,7 +5,7 @@
 //
 // Output shape:
 //   [
-//     { "line": 0, "tokens": [{ "start": 0, "end": 6, "text": "type", "scopes": ["source.awsum", "keyword.other.type-definition.awsum"] }, ...] },
+//     { "line": 0, "tokens": [{ "start": 0, "end": 6, "text": "type", "scopes": ["source.awsum-haskell", "keyword.other.type-definition.awsum"] }, ...] },
 //     ...
 //   ]
 //
@@ -15,9 +15,10 @@
 // `Data.Text` indexes by code point and would silently miscount any
 // supplementary-plane character (e.g. `𰎝`).
 //
-// Used by `awsum/test/Awsum/TextMateSpec.hs` (gated behind the
-// `textmate-tests` cabal flag) to assert TextMate-grammar invariants
-// (keywords get `keyword.*` scope, strings don't leak past `"`, etc.).
+// Used by `test/Awsum/TextMateSpec.hs` of the Haskell implementation (the
+// tag `awsum-haskell` of awsum-lang/awsum, gated behind the `textmate-tests`
+// cabal flag) to assert TextMate-grammar invariants (keywords get
+// `keyword.*` scope, strings don't leak past `"`, etc.).
 //
 // Usage: `node scripts/tokenize.mjs <path-to-aww-file>`.
 
@@ -28,7 +29,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const grammarPath = resolve(here, "..", "syntaxes", "awsum.tmLanguage.json");
+const grammarPath = resolve(here, "..", "syntaxes", "awsum-haskell.tmLanguage.json");
 const wasmPath = resolve(here, "..", "node_modules", "vscode-oniguruma", "release", "onig.wasm");
 
 async function main() {
@@ -48,15 +49,15 @@ async function main() {
   const registry = new vsctm.Registry({
     onigLib,
     loadGrammar: async (scopeName) => {
-      if (scopeName !== "source.awsum") return null;
+      if (scopeName !== "source.awsum-haskell") return null;
       const raw = await readFile(grammarPath, "utf-8");
       return vsctm.parseRawGrammar(raw, grammarPath);
     },
   });
 
-  const grammar = await registry.loadGrammar("source.awsum");
+  const grammar = await registry.loadGrammar("source.awsum-haskell");
   if (!grammar) {
-    process.stderr.write("failed to load grammar source.awsum\n");
+    process.stderr.write("failed to load grammar source.awsum-haskell\n");
     process.exit(3);
   }
 
